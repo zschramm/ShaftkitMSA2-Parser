@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 
 namespace ShaftkitMSA2_Parser
@@ -6,13 +7,15 @@ namespace ShaftkitMSA2_Parser
     public class FileHelper
     {
         /*public List<string> nodes = null;*/
-        static char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
+        static char[] delimiterChars = { ' ', ',', ':', '\t' };
+        public static ArrayList nodes = new ArrayList(); 
 
         private static string[] CleanLine(string line)
         {
             string trimmed = line.Trim();
             string[] newline = trimmed.Split(delimiterChars);
-            
+            newline = newline.Except(new List<string> { string.Empty }).ToArray();
+
             return newline;
         }
 
@@ -26,24 +29,29 @@ namespace ShaftkitMSA2_Parser
 
             for (int i = 0; i < lines.Length; i++)
             {
-                newline = CleanLine(lines[i]);
-                if (newline[0] == "NODES")
+                try
                 {
-                    i += 2;
                     newline = CleanLine(lines[i]);
-                    while (newline[0] !=  "ELEMEN")
+                    if (newline[0] == "NODES")
+                    {
+                        i += 2;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != "ELEMEN")
+                        {
+                            nodes.Add(newline);
+                            i++;
+                            newline = CleanLine(lines[i]);
+                        }
+                    }
+
+                    if (newline[0] == "BEAM")
                     {
                         Console.WriteLine("\t" + lines[i]);
-                        i++;
-                        newline = CleanLine(lines[i]);
                     }
+                
                 }
 
-                if (newline[0] == "BEAM")
-                {
-                    Console.WriteLine("\t" + lines[i]);
-                }
-
+                catch { continue; }
 
 
 

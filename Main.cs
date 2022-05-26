@@ -13,6 +13,11 @@ namespace ShaftkitMSA2_Parser
         {
 
             FileHelper.ReadFromFile(txtInputFile.Text);
+            foreach (string[] item in FileHelper.nodes)
+            {
+                txtOutput.Text += $"{item[0]} {item[1]}\r\n";
+            }
+
         }
     }
 

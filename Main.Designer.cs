@@ -28,9 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnParse = new System.Windows.Forms.Button();
             this.txtInputFile = new System.Windows.Forms.TextBox();
             this.txtOutputDir = new System.Windows.Forms.TextBox();
+            this.fileHelperBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.txtOutput = new System.Windows.Forms.TextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // btnParse
@@ -60,16 +64,30 @@
             this.txtOutputDir.TabIndex = 2;
             this.txtOutputDir.Text = "c:\\temp\\Parser";
             // 
+            // fileHelperBindingSource
+            // 
+            this.fileHelperBindingSource.DataSource = typeof(ShaftkitMSA2_Parser.FileHelper);
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Location = new System.Drawing.Point(92, 300);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.Size = new System.Drawing.Size(828, 388);
+            this.txtOutput.TabIndex = 3;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1069, 310);
+            this.ClientSize = new System.Drawing.Size(1069, 818);
+            this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.txtOutputDir);
             this.Controls.Add(this.txtInputFile);
             this.Controls.Add(this.btnParse);
             this.Name = "Main";
             this.Text = "Shaftkit MSA 2.0 - SHAFT.OUT Parser";
+            ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -80,5 +98,7 @@
         private Button btnParse;
         private TextBox txtInputFile;
         private TextBox txtOutputDir;
+        private BindingSource fileHelperBindingSource;
+        private TextBox txtOutput;
     }
 }
