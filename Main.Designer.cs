@@ -39,9 +39,10 @@
             // 
             // btnParse
             // 
-            this.btnParse.Location = new System.Drawing.Point(86, 169);
+            this.btnParse.Location = new System.Drawing.Point(69, 135);
+            this.btnParse.Margin = new System.Windows.Forms.Padding(2);
             this.btnParse.Name = "btnParse";
-            this.btnParse.Size = new System.Drawing.Size(309, 93);
+            this.btnParse.Size = new System.Drawing.Size(247, 74);
             this.btnParse.TabIndex = 0;
             this.btnParse.Text = "Run";
             this.btnParse.UseVisualStyleBackColor = true;
@@ -49,42 +50,43 @@
             // 
             // txtInputFile
             // 
-            this.txtInputFile.Location = new System.Drawing.Point(86, 55);
+            this.txtInputFile.Location = new System.Drawing.Point(69, 44);
+            this.txtInputFile.Margin = new System.Windows.Forms.Padding(2);
             this.txtInputFile.Name = "txtInputFile";
-            this.txtInputFile.Size = new System.Drawing.Size(892, 31);
+            this.txtInputFile.Size = new System.Drawing.Size(714, 27);
             this.txtInputFile.TabIndex = 1;
             this.txtInputFile.Text = "C:\\Users\\ZacSchramm\\LamaLo\\LL - General\\Software\\Z-Shaftkit\\Modeling\\DYNEXE\\SHAFT" +
     ".OUT";
             // 
             // txtOutputDir
             // 
-            this.txtOutputDir.Location = new System.Drawing.Point(86, 108);
+            this.txtOutputDir.Location = new System.Drawing.Point(69, 86);
+            this.txtOutputDir.Margin = new System.Windows.Forms.Padding(2);
             this.txtOutputDir.Name = "txtOutputDir";
-            this.txtOutputDir.Size = new System.Drawing.Size(892, 31);
+            this.txtOutputDir.Size = new System.Drawing.Size(714, 27);
             this.txtOutputDir.TabIndex = 2;
             this.txtOutputDir.Text = "c:\\temp\\Parser";
             // 
-            // fileHelperBindingSource
-            // 
-            this.fileHelperBindingSource.DataSource = typeof(ShaftkitMSA2_Parser.FileHelper);
-            // 
             // txtOutput
             // 
-            this.txtOutput.Location = new System.Drawing.Point(92, 300);
+            this.txtOutput.Location = new System.Drawing.Point(74, 240);
+            this.txtOutput.Margin = new System.Windows.Forms.Padding(2);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
-            this.txtOutput.Size = new System.Drawing.Size(828, 388);
+            this.txtOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtOutput.Size = new System.Drawing.Size(624, 311);
             this.txtOutput.TabIndex = 3;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1069, 818);
+            this.ClientSize = new System.Drawing.Size(855, 654);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.txtOutputDir);
             this.Controls.Add(this.txtInputFile);
             this.Controls.Add(this.btnParse);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Main";
             this.Text = "Shaftkit MSA 2.0 - SHAFT.OUT Parser";
             ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).EndInit();

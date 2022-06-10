@@ -6,15 +6,50 @@ namespace ShaftkitMSA2_Parser
 {
     public class FileHelper
     {
-        /*public List<string> nodes = null;*/
         static char[] delimiterChars = { ' ', ',', ':', '\t' };
-        public static ArrayList nodes = new ArrayList(); 
+        public static ArrayList nodes = new ArrayList();
+        public static ArrayList elems = new ArrayList();
+
+        // Node lists
+        public static ArrayList NodeNum = new ArrayList();
+        public static ArrayList NodeX = new ArrayList();
+
+        // Element lists
+        public static ArrayList ElemNum = new ArrayList();
+        public static ArrayList ElemOD = new ArrayList();
+        public static ArrayList ElemID = new ArrayList();
+        public static ArrayList ElemE = new ArrayList();
+        public static ArrayList ElemG = new ArrayList();
+        public static ArrayList ElemRho = new ArrayList();
+
+        // Conc Mass Lists
+        public static ArrayList ConcMassNode = new ArrayList();
+        public static ArrayList ConcMassVal = new ArrayList();
+
+        // Nodal Results Lists
+        public static ArrayList disp = new ArrayList();
+        public static ArrayList slope = new ArrayList();
+        public static ArrayList moment = new ArrayList();
+        public static ArrayList shear = new ArrayList();
+        public static ArrayList stress = new ArrayList();
+
+        // Reaction Lists
+        public static ArrayList reactNode = new ArrayList();
+        public static ArrayList reactVal = new ArrayList();
+        public static ArrayList reactStraight = new ArrayList();
+
+        // Influence List
+        public static ArrayList inf = new ArrayList();
+        
 
         private static string[] CleanLine(string line)
         {
             string trimmed = line.Trim();
-            string[] newline = trimmed.Split(delimiterChars);
-            newline = newline.Except(new List<string> { string.Empty }).ToArray();
+            string[] newline = trimmed.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
+            //string[] newline = nextline.Except(new List<string> { string.Empty }).ToArray();
+
+            // need to return something if string{0}
+
 
             return newline;
         }
@@ -31,27 +66,142 @@ namespace ShaftkitMSA2_Parser
             {
                 try
                 {
+                    // Parse Nodes
                     newline = CleanLine(lines[i]);
                     if (newline[0] == "NODES")
                     {
-                        i += 2;
+                        i += 1;
                         newline = CleanLine(lines[i]);
                         while (newline[0] != "ELEMEN")
                         {
-                            nodes.Add(newline);
+                            NodeNum.Add(newline[0]);
+                            NodeX.Add(newline[1]);
                             i++;
                             newline = CleanLine(lines[i]);
                         }
                     }
 
-                    if (newline[0] == "BEAM")
+                    // Parse Elements
+                    if (newline[0] == "BEAM" && newline[1] == "TYPES")
                     {
-                        Console.WriteLine("\t" + lines[i]);
+                        i++;
+                        int j = 1;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != "CONC")
+                        {
+                            ElemNum.Add(j.ToString());
+                            ElemOD.Add(newline[0]);
+                            ElemID.Add(newline[1]);
+                            ElemE.Add(newline[2]);
+                            ElemG.Add(newline[3]);
+                            ElemRho.Add(newline[4]);
+
+                            i++;
+                            j++;
+                            newline = CleanLine(lines[i]);
+                        }
                     }
-                
+
+                    // Parse ConcMass
+                    if (newline[0] == "CONC" && newline[1] == "MASS")
+                    {
+                        i++;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != "CONC")
+                        {
+                            ConcMassNode.Add(newline[1]);
+                            ConcMassVal.Add(newline[2]);
+
+                            i += 2;
+                            newline = CleanLine(lines[i]);
+                        }
+                    }
+
+                    //// Parse Reactions
+                    //if (newline[0] == "SPRING")
+                    //{
+                    //    i = i + 5;
+                    //    newline = CleanLine(lines[i]);
+                    //    while (newline[0] != null)
+                    //    {
+                    //        reactNode.Add(newline[0]);
+                    //        reactVal.Add(newline[2]);
+
+                    //        i++;
+                    //        newline = CleanLine(lines[i]);
+                    //    }
+                    //}
+
+                    // Parse Displacements & Slope
+                    if (newline[0] == "DISPLACEMENTS")
+                    {
+                        i = i + 6;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != null)
+                        {
+                            disp.Add(newline[1]);
+                            slope.Add(newline[2]);
+
+                            i++;
+                            newline = CleanLine(lines[i]);
+                        }
+                    }
+
+                    // Parse Bending, Moment
+                    if (newline[0] == "BEAM" && newline[1] == "FORCES")
+                    {
+                        i += 4;
+                        newline = CleanLine(lines[i]);
+                        while (newline != null)
+                        {
+                            try
+                            {
+                                shear.Add(newline[2]);
+                                moment.Add(newline[3]);
+
+                                i += 2;
+                                newline = CleanLine(lines[i]);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message + " " + i.ToString());
+                                newline = CleanLine(lines[i - 1]);
+                                shear.Add(newline[2]);
+                                moment.Add(newline[3]);
+
+                                break;
+                            }
+                                                        
+                        }
+                        
+                    }
+
+                    //// Parse Influence
+                    //if (newline[0] == "INFLUENCE")
+                    //{
+                    //    i = i + 3;
+                    //    newline = CleanLine(lines[i]);
+                    //    reactStraight.Add(newline);
+
+                    //    i++;
+                    //    newline = CleanLine(lines[i]);
+                    //    while (newline[0] != null)
+                    //    {
+                        
+                    //        inf.Add(newline);
+                            
+                    //        i++;
+                    //        newline = CleanLine(lines[i]);
+                    //    }
+                    //}
+
                 }
 
-                catch { continue; }
+                catch (Exception ex)
+                {
+                    // MessageBox.Show(ex.Message + i.ToString());
+                    continue;
+                }
 
 
 
