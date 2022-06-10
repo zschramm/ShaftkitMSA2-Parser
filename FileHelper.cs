@@ -117,20 +117,20 @@ namespace ShaftkitMSA2_Parser
                         }
                     }
 
-                    //// Parse Reactions
-                    //if (newline[0] == "SPRING")
-                    //{
-                    //    i = i + 5;
-                    //    newline = CleanLine(lines[i]);
-                    //    while (newline[0] != null)
-                    //    {
-                    //        reactNode.Add(newline[0]);
-                    //        reactVal.Add(newline[2]);
+                    // Parse Reactions
+                    if (newline[0] == "SPRING")
+                    {
+                        i = i + 5;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != null)
+                        {
+                            reactNode.Add(newline[0]);
+                            reactVal.Add(newline[2]);
 
-                    //        i++;
-                    //        newline = CleanLine(lines[i]);
-                    //    }
-                    //}
+                            i++;
+                            newline = CleanLine(lines[i]);
+                        }
+                    }
 
                     // Parse Displacements & Slope
                     if (newline[0] == "DISPLACEMENTS")
@@ -162,9 +162,10 @@ namespace ShaftkitMSA2_Parser
                                 i += 2;
                                 newline = CleanLine(lines[i]);
                             }
-                            catch (Exception ex)
+                            catch (IndexOutOfRangeException ex)
                             {
-                                MessageBox.Show(ex.Message + " " + i.ToString());
+                                // how to fix exception called on line 539???
+                                // MessageBox.Show(ex.Message + " " + i.ToString());
                                 newline = CleanLine(lines[i - 1]);
                                 shear.Add(newline[2]);
                                 moment.Add(newline[3]);
@@ -177,27 +178,27 @@ namespace ShaftkitMSA2_Parser
                     }
 
                     //// Parse Influence
-                    //if (newline[0] == "INFLUENCE")
-                    //{
-                    //    i = i + 3;
-                    //    newline = CleanLine(lines[i]);
-                    //    reactStraight.Add(newline);
+                    if (newline[0] == "Influence")
+                    {
+                        i = i + 3;
+                        newline = CleanLine(lines[i]);
+                        reactStraight.Add(newline);
 
-                    //    i++;
-                    //    newline = CleanLine(lines[i]);
-                    //    while (newline[0] != null)
-                    //    {
-                        
-                    //        inf.Add(newline);
-                            
-                    //        i++;
-                    //        newline = CleanLine(lines[i]);
-                    //    }
-                    //}
+                        i++;
+                        newline = CleanLine(lines[i]);
+                        while (newline[0] != null)
+                        {
+
+                            inf.Add(newline);
+
+                            i++;
+                            newline = CleanLine(lines[i]);
+                        }
+                    }
 
                 }
 
-                catch (Exception ex)
+                catch (IndexOutOfRangeException ex)
                 {
                     // MessageBox.Show(ex.Message + i.ToString());
                     continue;

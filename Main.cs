@@ -48,15 +48,28 @@ namespace ShaftkitMSA2_Parser
             //txtOutput.Text += "\r\n";
 
             // write out bending, shear, stress
-            txtOutput.Text += "Moment, Shear\r\n";
-            for (int i = 0; i < FileHelper.disp.Count; i++)
+            //txtOutput.Text += "Moment, Shear\r\n";
+            //for (int i = 0; i < FileHelper.disp.Count; i++)
+            //{
+            //    txtOutput.Text += $"{FileHelper.NodeNum[i]} {FileHelper.moment[i]} {FileHelper.shear[i]}\r\n";
+            //}
+            //txtOutput.Text += "\r\n";
+
+            // check spring reactions
+            //txtOutput.Text += "Reactions\r\n";
+            //for (int i = 0; i < FileHelper.reactVal.Count; i++)
+            //{
+            //    txtOutput.Text += $"{FileHelper.reactNode[i]} {FileHelper.reactVal[i]}\r\n";
+            //}
+            //txtOutput.Text += "\r\n";
+
+            //check influence
+            txtOutput.Text += "Influence\r\n";
+            for (int i = 0; i < FileHelper.inf.Count; i++)
             {
-                txtOutput.Text += $"{FileHelper.NodeNum[i]} {FileHelper.moment[i]} {FileHelper.shear[i]}\r\n";
+                txtOutput.Text += $"{FileHelper.inf[i]}\r\n";
             }
             txtOutput.Text += "\r\n";
-
-            // check spring reactions, influence output
-
         }
     }
 
