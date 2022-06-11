@@ -67,7 +67,11 @@ namespace ShaftkitMSA2_Parser
             txtOutput.Text += "Influence\r\n";
             for (int i = 0; i < FileHelper.inf.Count; i++)
             {
-                txtOutput.Text += $"{FileHelper.inf[i]}\r\n";
+                for (int j = 0; j < FileHelper.inf[i].Count; j++)
+                {
+                    txtOutput.Text += $"{FileHelper.inf[i][j]} ";
+                }
+                txtOutput.Text += $"\r\n";
             }
             txtOutput.Text += "\r\n";
         }

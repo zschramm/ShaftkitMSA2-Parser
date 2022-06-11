@@ -39,8 +39,8 @@ namespace ShaftkitMSA2_Parser
         public static ArrayList reactStraight = new ArrayList();
 
         // Influence List
-        public static ArrayList inf = new ArrayList();
-        
+        public static List<List<string>> inf = new List<List<string>>();
+
 
         private static string[] CleanLine(string line)
         {
@@ -53,6 +53,17 @@ namespace ShaftkitMSA2_Parser
 
             return newline;
         }
+
+        //private static IEnumerable<String> SplitInParts(String s, Int32 partLength)
+        //{
+        //    if (s == null)
+        //        throw new ArgumentNullException(nameof(s));
+        //    if (partLength <= 0)
+        //        throw new ArgumentException("Part length has to be positive.", nameof(partLength));
+
+        //    for (var i = 0; i < s.Length; i += partLength)
+        //        yield return s.Substring(i, Math.Min(partLength, s.Length - i));
+        //}
 
         public static void ReadFromFile(string filename)
         {
@@ -185,11 +196,12 @@ namespace ShaftkitMSA2_Parser
                         reactStraight.Add(newline);
 
                         i++;
+
                         newline = CleanLine(lines[i]);
                         while (newline[0] != null)
                         {
 
-                            inf.Add(newline);
+                            inf.Add(newline.ToList());
 
                             i++;
                             newline = CleanLine(lines[i]);
