@@ -33,7 +33,7 @@ namespace ShaftkitMSA2_Parser
 
             // write out concmass
             txtOutput.Text += "ConcMass\r\n";
-            foreach (string item in FileHelper.ConcMassVal)
+            foreach (float item in FileHelper.ConcMassVal)
             {
                 txtOutput.Text += $"{item}\r\n";
             }

@@ -7,36 +7,35 @@ namespace ShaftkitMSA2_Parser
     public class FileHelper
     {
         static char[] delimiterChars = { ' ', ',', ':', '\t' };
-        public static ArrayList nodes = new ArrayList();
-        public static ArrayList elems = new ArrayList();
 
         // Node lists
-        public static ArrayList NodeNum = new ArrayList();
-        public static ArrayList NodeX = new ArrayList();
+        public static List<byte> NodeNum = new List<byte>();
+        public static List<float> NodeX = new List<float>();
 
         // Element lists
-        public static ArrayList ElemNum = new ArrayList();
-        public static ArrayList ElemOD = new ArrayList();
-        public static ArrayList ElemID = new ArrayList();
-        public static ArrayList ElemE = new ArrayList();
-        public static ArrayList ElemG = new ArrayList();
-        public static ArrayList ElemRho = new ArrayList();
+        public static List<byte> ElemNum = new List<byte>();
+        public static List<float> ElemOD = new List<float>();
+        public static List<float> ElemID = new List<float>();
+        public static List<float> ElemE = new List<float>();
+        public static List<float> ElemG = new List<float>();
+        public static List<float> ElemRho = new List<float>();
+
 
         // Conc Mass Lists
-        public static ArrayList ConcMassNode = new ArrayList();
-        public static ArrayList ConcMassVal = new ArrayList();
+        public static List<float> ConcMassNode = new List<float>();
+        public static List<float> ConcMassVal = new List<float>();
 
         // Nodal Results Lists
-        public static ArrayList disp = new ArrayList();
-        public static ArrayList slope = new ArrayList();
-        public static ArrayList moment = new ArrayList();
-        public static ArrayList shear = new ArrayList();
-        public static ArrayList stress = new ArrayList();
+        public static List<float> Disp = new List<float>();
+        public static List<float> Slope = new List<float>();
+        public static List<float> Moment = new List<float>();
+        public static List<float> Shear = new List<float>();
+        public static List<float> Stress = new List<float>();
 
         // Reaction Lists
-        public static ArrayList reactNode = new ArrayList();
-        public static ArrayList reactVal = new ArrayList();
-        public static ArrayList reactStraight = new ArrayList();
+        public static List<byte> ReactNode = new List<byte>();
+        public static List<float> ReactVal = new List<float>();
+        public static string?[] ReactStraight;
 
         // Influence List
         public static List<List<string>> inf = new List<List<string>>();
@@ -85,8 +84,8 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != "ELEMEN")
                         {
-                            NodeNum.Add(newline[0]);
-                            NodeX.Add(newline[1]);
+                            NodeNum.Add(byte.Parse(newline[0]));
+                            NodeX.Add(float.Parse(newline[1]));
                             i++;
                             newline = CleanLine(lines[i]);
                         }
@@ -96,16 +95,16 @@ namespace ShaftkitMSA2_Parser
                     if (newline[0] == "BEAM" && newline[1] == "TYPES")
                     {
                         i++;
-                        int j = 1;
+                        byte j = 1;
                         newline = CleanLine(lines[i]);
                         while (newline[0] != "CONC")
                         {
-                            ElemNum.Add(j.ToString());
-                            ElemOD.Add(newline[0]);
-                            ElemID.Add(newline[1]);
-                            ElemE.Add(newline[2]);
-                            ElemG.Add(newline[3]);
-                            ElemRho.Add(newline[4]);
+                            ElemNum.Add(j);
+                            ElemOD.Add(float.Parse(newline[0]));
+                            ElemID.Add(float.Parse(newline[1]));
+                            ElemE.Add(float.Parse(newline[2]));
+                            ElemG.Add(float.Parse(newline[3]));
+                            ElemRho.Add(float.Parse(newline[4]));
 
                             i++;
                             j++;
@@ -120,8 +119,8 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != "CONC")
                         {
-                            ConcMassNode.Add(newline[1]);
-                            ConcMassVal.Add(newline[2]);
+                            ConcMassNode.Add(short.Parse(newline[1]));
+                            ConcMassVal.Add(float.Parse(newline[2]));
 
                             i += 2;
                             newline = CleanLine(lines[i]);
@@ -135,8 +134,8 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != null)
                         {
-                            reactNode.Add(newline[0]);
-                            reactVal.Add(newline[2]);
+                            ReactNode.Add(byte.Parse(newline[0]));
+                            ReactVal.Add(float.Parse(newline[2]));
 
                             i++;
                             newline = CleanLine(lines[i]);
@@ -150,8 +149,8 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != null)
                         {
-                            disp.Add(newline[1]);
-                            slope.Add(newline[2]);
+                            Disp.Add(float.Parse(newline[1]));
+                            Slope.Add(float.Parse(newline[2]));
 
                             i++;
                             newline = CleanLine(lines[i]);
@@ -167,8 +166,8 @@ namespace ShaftkitMSA2_Parser
                         {
                             try
                             {
-                                shear.Add(newline[2]);
-                                moment.Add(newline[3]);
+                                Shear.Add(float.Parse(newline[2]));
+                                Moment.Add(float.Parse(newline[3]));
 
                                 i += 2;
                                 newline = CleanLine(lines[i]);
@@ -178,8 +177,8 @@ namespace ShaftkitMSA2_Parser
                                 // how to fix exception called on line 539???
                                 // MessageBox.Show(ex.Message + " " + i.ToString());
                                 newline = CleanLine(lines[i - 1]);
-                                shear.Add(newline[2]);
-                                moment.Add(newline[3]);
+                                Shear.Add(float.Parse(newline[2]));
+                                Moment.Add(float.Parse(newline[3]));
 
                                 break;
                             }
@@ -193,7 +192,7 @@ namespace ShaftkitMSA2_Parser
                     {
                         i = i + 3;
                         newline = CleanLine(lines[i]);
-                        reactStraight.Add(newline);
+                        ReactStraight = newline;
 
                         i++;
 
