@@ -14,6 +14,8 @@ namespace ShaftkitMSA2_Parser
             // read data from input file
             FileHelper.ReadFromFile(txtInputFile.Text);
 
+            FileHelper.WriteCSV(txtOutputFile.Text);
+
             //// write out nodeX
             //txtOutput.Text += "Nodes\r\n";
             //foreach (string item in FileHelper.NodeX)
@@ -32,12 +34,12 @@ namespace ShaftkitMSA2_Parser
             //txtOutput.Text += "\r\n";
 
             // write out concmass
-            txtOutput.Text += "ConcMass\r\n";
-            foreach (float item in FileHelper.ConcMassVal)
-            {
-                txtOutput.Text += $"{item}\r\n";
-            }
-            txtOutput.Text += "\r\n";
+            //txtOutput.Text += "ConcMass\r\n";
+            //foreach (float item in FileHelper.ConcMassVal)
+            //{
+            //    txtOutput.Text += $"{item}\r\n";
+            //}
+            //txtOutput.Text += "\r\n";
 
             //// write out displacement & slope
             //txtOutput.Text += "Displacement & Slope\r\n";
@@ -64,16 +66,16 @@ namespace ShaftkitMSA2_Parser
             //txtOutput.Text += "\r\n";
 
             //check influence
-            txtOutput.Text += "Influence\r\n";
-            for (int i = 0; i < FileHelper.inf.Count; i++)
-            {
-                for (int j = 0; j < FileHelper.inf[i].Count; j++)
-                {
-                    txtOutput.Text += $"{FileHelper.inf[i][j]} ";
-                }
-                txtOutput.Text += $"\r\n";
-            }
-            txtOutput.Text += "\r\n";
+            //txtOutput.Text += "Influence\r\n";
+            //for (int i = 0; i < FileHelper.inf.Count; i++)
+            //{
+            //    for (int j = 0; j < FileHelper.inf[i].Count; j++)
+            //    {
+            //        txtOutput.Text += $"{FileHelper.inf[i][j]} ";
+            //    }
+            //    txtOutput.Text += $"\r\n";
+            //}
+            //txtOutput.Text += "\r\n";
         }
     }
 
