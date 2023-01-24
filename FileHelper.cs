@@ -165,8 +165,8 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != null)
                         {
-                            Disp.Add(float.Parse(newline[1]));
-                            Slope.Add(float.Parse(newline[2]));
+                            Disp.Add(float.Parse(newline[1]) * 1000);
+                            Slope.Add(float.Parse(newline[2]) * 1000);
 
                             i++;
                             newline = CleanLine(lines[i]);
@@ -182,8 +182,8 @@ namespace ShaftkitMSA2_Parser
                         {
                             try
                             {
-                                Shear.Add(float.Parse(newline[2]));
-                                Moment.Add(float.Parse(newline[3]));
+                                Shear.Add(float.Parse(newline[2]) / 1000);
+                                Moment.Add(float.Parse(newline[3]) / 1000 * -1);
 
                                 i += 2;
                                 newline = CleanLine(lines[i]);
@@ -276,11 +276,11 @@ namespace ShaftkitMSA2_Parser
                 record.Shear = Shear[i];
                 if (i < ElemNum.Count)
                 {
-                    record.Stress = Moment[i] * (ElemOD[i] / 2) / Elems[i].PolInertia;
+                    record.Stress = Moment[i] * (ElemOD[i] / 2) / Elems[i].PolInertia / 1000;
                 }
                 else
                 {
-                    record.Stress = Moment[i] * (ElemOD[i - 1] / 2) / Elems[i - 1].PolInertia;
+                    record.Stress = Moment[i] * (ElemOD[i - 1] / 2) / Elems[i - 1].PolInertia / 1000;
                 }
                 Nodes.Add(record);
             }
@@ -314,12 +314,14 @@ namespace ShaftkitMSA2_Parser
 
                 csv.WriteComment("Elements");
                 csv.NextRecord();
+                csv.WriteComment("Num, OD (m), ID (m), Length (m), E (GPa), G (GPa), Density (kg/m^3), Mass (kg), Inertia (m^4), Sec. Modulus (m^3)");
+                csv.NextRecord();
                 csv.WriteRecords(Elems);
                 csv.NextRecord();
 
                 csv.WriteComment("Nodes");
                 csv.NextRecord();
-                csv.WriteHeader<Node>();
+                csv.WriteComment("Num, x (m), Disp. (mm), Slope (mrad), Moment (kNm), Shear (kN), Stress (MPa)");
                 csv.NextRecord();
                 csv.WriteRecords(Nodes);
                 csv.NextRecord();
