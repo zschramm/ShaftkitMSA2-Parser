@@ -1,3 +1,4 @@
+using ScottPlot;
 using System;
 
 namespace ShaftkitMSA2_Parser
@@ -76,6 +77,76 @@ namespace ShaftkitMSA2_Parser
             //    txtOutput.Text += $"\r\n";
             //}
             //txtOutput.Text += "\r\n";
+
+            double[] x = (double)FileHelper.NodeX;
+            double[] disp = (double)FileHelper.Disp;
+            Plot1.Plot.AddScatter(x, disp);
+
+            // Axes can be customized
+            Plot1.Plot.XAxis.Label("Position (m)");
+            Plot1.Plot.YAxis.Label("Displacement (mm)");
+            
+            // Set axis limits to control the view
+            //Plot1.SetAxisLimits(-20, 80, -2, 2);
+
+            //Plot1.SaveFig("quickstart_axis.png");
+        }
+
+        private void txtInputFile_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnOpenFileDialog_Click(object sender, EventArgs e)
+        {
+            
+            if (txtInputFile.Text != null);
+            {
+                if (Directory.Exists(Path.GetDirectoryName(txtInputFile.Text)))
+                {
+                    openFileDialog1.InitialDirectory = Path.GetDirectoryName(txtInputFile.Text);
+                    openFileDialog1.FileName = Path.GetFileName(txtInputFile.Text);
+                }
+                else
+                {
+                    openFileDialog1.InitialDirectory = System.Environment.GetEnvironmentVariable("USERPROFILE");
+                    openFileDialog1.FileName = "";
+                }
+            }
+            
+            openFileDialog1.Filter = "Output File (*.OUT)|*.OUT|All Files (*.*)|*.*";
+            openFileDialog1.Multiselect = false;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                txtInputFile.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void btnSaveFileDialog_Click(object sender, EventArgs e)
+        {
+
+            if (txtOutputFile.Text != null) ;
+            {
+                if (Directory.Exists(Path.GetDirectoryName(txtOutputFile.Text)))
+                {
+                    saveFileDialog1.InitialDirectory = Path.GetDirectoryName(txtOutputFile.Text);
+                    saveFileDialog1.FileName = Path.GetFileName(txtOutputFile.Text);
+                }
+                else
+                {
+                    saveFileDialog1.InitialDirectory = System.Environment.GetEnvironmentVariable("USERPROFILE");
+                    saveFileDialog1.FileName = "output.csv";
+                }
+            }
+
+            saveFileDialog1.Filter = "Comma Separated Values (.csv)|*.csv|All Files (*.*)|*.*";
+            
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                txtOutputFile.Text = saveFileDialog1.FileName;
+            }
         }
     }
 
