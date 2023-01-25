@@ -1,5 +1,8 @@
 using ScottPlot;
 using System;
+using System.Collections;
+using System.Security;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ShaftkitMSA2_Parser
 {
@@ -12,10 +15,23 @@ namespace ShaftkitMSA2_Parser
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            // read data from input file
-            FileHelper.ReadFromFile(txtInputFile.Text);
+            FileHelper data = new FileHelper();
 
-            FileHelper.WriteCSV(txtOutputFile.Text);
+            // read data from input file
+            data.ReadFromFile(txtInputFile.Text);
+            data.WriteCSV(txtOutputFile.Text);
+
+            List<xy> srs = new List<xy>();
+            srs = data.PrepareSeries(data.NodeX, data.Disp);
+            
+            chart1.DataSource = srs;
+            chart1.Series[0].XValueMember = "x";
+            chart1.Series[0].YValueMembers = "y";
+            chart1.Series[0].ChartType = SeriesChartType.Line;
+            chart1.DataBind();
+            chart1.Update();
+
+
 
             //// write out nodeX
             //txtOutput.Text += "Nodes\r\n";
@@ -78,18 +94,30 @@ namespace ShaftkitMSA2_Parser
             //}
             //txtOutput.Text += "\r\n";
 
-            double[] x = (double)FileHelper.NodeX;
-            double[] disp = (double)FileHelper.Disp;
-            Plot1.Plot.AddScatter(x, disp);
+            //series d = new series("displacment (mm)", 1);
+            //d.charttype = seriescharttype.line;
+            //d.points.addxy(0, 0);
+            //d.points.addxy(1, 1);
+            //d.points.addxy(2, 2);
+            //chart1.series.add(d);
+            //d.enabled = true;
 
-            // Axes can be customized
-            Plot1.Plot.XAxis.Label("Position (m)");
-            Plot1.Plot.YAxis.Label("Displacement (mm)");
-            
-            // Set axis limits to control the view
-            //Plot1.SetAxisLimits(-20, 80, -2, 2);
 
-            //Plot1.SaveFig("quickstart_axis.png");
+            //chart1.Series.Add("Shear").YValueMembers = "Shear";
+            //chart1.Series["Shear"].ChartType = SeriesChartType.Line;
+            //chart1.Series["Shear"].XValueType = ChartValueType.Int32;
+            //chart1.Series["Shear"].YValueType = ChartValueType.Int32;
+
+            //chart1.Series.Add("Disp").YValueMembers = "Disp";
+            //chart1.Series["Disp"].ChartType = SeriesChartType.Line;
+            //chart1.Series["Disp"].XValueType = ChartValueType.Int32;
+            //chart1.Series["Disp"].YValueType = ChartValueType.Int32;
+
+            //chart1.Series.Add("Slope").YValueMembers = "Slope";
+            //chart1.Series["Slope"].ChartType = SeriesChartType.Line;
+            //chart1.Series["Slope"].XValueType = ChartValueType.Int32;
+            //chart1.Series["Slope"].YValueType = ChartValueType.Int32;
+
         }
 
         private void txtInputFile_TextChanged(object sender, EventArgs e)

@@ -9,51 +9,51 @@ namespace ShaftkitMSA2_Parser
 {
     public class FileHelper
     {
-        static char[] delimiterChars = { ' ', ',', ':', '\t' };
+        char[] delimiterChars = { ' ', ',', ':', '\t' };
 
         // Node lists
-        public static List<byte> NodeNum = new List<byte>();
-        public static List<float> NodeX = new List<float>();
+        List<byte> NodeNum = new List<byte>();
+        public List<float> NodeX = new List<float>();
 
         // Element lists
-        public static List<byte> ElemNum = new List<byte>();
-        public static List<float> ElemOD = new List<float>();
-        public static List<float> ElemID = new List<float>();
-        public static List<float> ElemE = new List<float>();
-        public static List<float> ElemG = new List<float>();
-        public static List<float> ElemRho = new List<float>();
+        List<byte> ElemNum = new List<byte>();
+        List<float> ElemOD = new List<float>();
+        List<float> ElemID = new List<float>();
+        List<float> ElemE = new List<float>();
+        List<float> ElemG = new List<float>();
+        List<float> ElemRho = new List<float>();
 
 
         // Conc Mass Lists
-        public static List<float> ConcMassNode = new List<float>();
-        public static List<float> ConcMassVal = new List<float>();
+        List<float> ConcMassNode = new List<float>();
+        List<float> ConcMassVal = new List<float>();
 
         // Nodal Results Lists
-        public static List<float> Disp = new List<float>();
-        public static List<float> Slope = new List<float>();
-        public static List<float> Moment = new List<float>();
-        public static List<float> Shear = new List<float>();
+        public List<float> Disp = new List<float>();
+        public List<float> Slope = new List<float>();
+        public List<float> Moment = new List<float>();
+        public List<float> Shear = new List<float>();
 
         // Reaction Lists
-        public static List<byte> ReactNode = new List<byte>();
-        public static List<float> ReactVal = new List<float>();
-        public static string?[] ReactStraight;
+        List<byte> ReactNode = new List<byte>();
+        List<float> ReactVal = new List<float>();
+        string?[] ReactStraight;
 
         // Influence List
-        public static List<List<string>> inf = new List<List<string>>();
+        List<List<string>> inf = new List<List<string>>();
 
         // CSV writer Lists
-        public static List<Elem> Elems = new List<Elem>();
-        public static List<Node> Nodes = new List<Node>();
-        public static List<ConcMass> ConcMasses = new List<ConcMass>();
+        List<Elem> Elems = new List<Elem>();
+        List<Node> Nodes = new List<Node>();
+        List<ConcMass> ConcMasses = new List<ConcMass>();
 
         // Summary Data
-        public static float TotalMass = new float();
-        public static float TotalElementMass = new float();
-        public static float TotalConcMass = new float();
+        float TotalMass = new float();
+        float TotalElementMass = new float();
+        float TotalConcMass = new float();
 
 
-        private static string[] CleanLine(string line)
+        private string[] CleanLine(string line)
         {
             string trimmed = line.Trim();
             string[] newline = trimmed.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
@@ -76,7 +76,7 @@ namespace ShaftkitMSA2_Parser
         //        yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         //}
 
-        public static void ReadFromFile(string filename)
+        public void ReadFromFile(string filename)
         {
 
             // Read each line of the file into a string array. Each element
@@ -239,7 +239,7 @@ namespace ShaftkitMSA2_Parser
 
         }
 
-        private static void AssembleClasses()
+        private void AssembleClasses()
         {
             // assemble model data
             for (byte i = 0; i < ElemNum.Count; i++)
@@ -288,7 +288,7 @@ namespace ShaftkitMSA2_Parser
             TotalMass = TotalElementMass + TotalConcMass;
         }
 
-        public static void WriteCSV(string filename)
+        public void WriteCSV(string filename)
         {
             using (var writer = new StreamWriter(filename))
             using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
@@ -332,6 +332,30 @@ namespace ShaftkitMSA2_Parser
 
             }
         }
+
+        public List<xy> PrepareSeries(List<float> x, List<float> y)
+        {
+            List<xy> data = new List<xy>();
+
+            for (byte i = 0; i < x.Count; i++)
+            {
+                xy rec = new xy();
+
+                rec.x = x[i];
+                rec.y = y[i];
+                data.Add(rec);
+            }
+
+            return data;
+        }
+    }
+
+
+
+    public class xy
+    {
+        public float x { get; set; }
+        public float y { get; set; }
     }
 
     public class Elem

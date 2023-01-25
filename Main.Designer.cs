@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.btnParse = new System.Windows.Forms.Button();
             this.txtInputFile = new System.Windows.Forms.TextBox();
             this.txtOutputFile = new System.Windows.Forms.TextBox();
@@ -38,8 +41,9 @@
             this.btnOpenFileDialog = new System.Windows.Forms.Button();
             this.btnSaveFileDialog = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.Plot1 = new ScottPlot.FormsPlot();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // btnParse
@@ -107,20 +111,27 @@
             this.btnSaveFileDialog.UseVisualStyleBackColor = true;
             this.btnSaveFileDialog.Click += new System.EventHandler(this.btnSaveFileDialog_Click);
             // 
-            // Plot1
+            // chart1
             // 
-            this.Plot1.Location = new System.Drawing.Point(60, 229);
-            this.Plot1.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.Plot1.Name = "Plot1";
-            this.Plot1.Size = new System.Drawing.Size(769, 366);
-            this.Plot1.TabIndex = 6;
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
+            this.chart1.Location = new System.Drawing.Point(69, 214);
+            this.chart1.Name = "chart1";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
+            this.chart1.Size = new System.Drawing.Size(596, 428);
+            this.chart1.TabIndex = 6;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(855, 654);
-            this.Controls.Add(this.Plot1);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.btnSaveFileDialog);
             this.Controls.Add(this.btnOpenFileDialog);
             this.Controls.Add(this.txtOutput);
@@ -131,6 +142,7 @@
             this.Name = "Main";
             this.Text = "Shaftkit MSA 2.0 - SHAFT.OUT Parser";
             ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,6 +159,6 @@
         private Button btnOpenFileDialog;
         private Button btnSaveFileDialog;
         private SaveFileDialog saveFileDialog1;
-        private ScottPlot.FormsPlot Plot1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }
