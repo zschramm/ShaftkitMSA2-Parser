@@ -27,6 +27,7 @@ namespace ShaftkitMSA2_Parser
             chart1.DataSource = srs;
             chart1.Series[0].XValueMember = "x";
             chart1.Series[0].YValueMembers = "y";
+            chart1.Series[0].AxisLabel = "Displacement (mm)";
             chart1.Series[0].ChartType = SeriesChartType.Line;
             chart1.DataBind();
             chart1.Update();
@@ -82,17 +83,19 @@ namespace ShaftkitMSA2_Parser
             //}
             //txtOutput.Text += "\r\n";
 
-            //check influence
-            //txtOutput.Text += "Influence\r\n";
-            //for (int i = 0; i < FileHelper.inf.Count; i++)
-            //{
-            //    for (int j = 0; j < FileHelper.inf[i].Count; j++)
-            //    {
-            //        txtOutput.Text += $"{FileHelper.inf[i][j]} ";
-            //    }
-            //    txtOutput.Text += $"\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
+            // check influence
+            txtOutput.Text += "influence\r\n";
+            List<List<string>> inf = new List<List<string>>();
+            inf = data.inf;
+            for (int i = 0; i < inf.Count; i++)
+            {
+                for (int j = 0; j < inf[i].Count; j++)
+                {
+                    txtOutput.Text += $"{inf[i][j]} \r\n";
+                }
+                txtOutput.Text += $"\r\n";
+            }
+            txtOutput.Text += "\r\n";
 
             //series d = new series("displacment (mm)", 1);
             //d.charttype = seriescharttype.line;

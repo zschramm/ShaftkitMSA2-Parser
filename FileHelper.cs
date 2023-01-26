@@ -40,7 +40,7 @@ namespace ShaftkitMSA2_Parser
         string?[] ReactStraight;
 
         // Influence List
-        List<List<string>> inf = new List<List<string>>();
+        public List<List<string>> inf = new List<List<string>>();
 
         // CSV writer Lists
         List<Elem> Elems = new List<Elem>();
@@ -221,6 +221,8 @@ namespace ShaftkitMSA2_Parser
                             i++;
                             newline = CleanLine(lines[i]);
                         }
+
+
                     }
 
                 }
@@ -286,6 +288,28 @@ namespace ShaftkitMSA2_Parser
             }
 
             TotalMass = TotalElementMass + TotalConcMass;
+
+
+            // Fix influence matrix
+            for (byte i = 0; i < ReactStraight.Count(); i++)
+            {
+                for (byte j = 0; j < inf[i].Count(); j++)
+                {
+                    if (inf[i][j].Length > 10)
+                    {
+                        if (inf[i][j].Substring(9, 1) == "-")
+                        {
+                            string temp = inf[i][j];
+                            string one = temp.Substring(0, 9);
+                            string two = temp.Substring(9);
+                            inf[i][j] = one;
+                            inf[i].Insert(j + 1, two);
+                        }
+                    }
+                }
+
+            }
+
         }
 
         public void WriteCSV(string filename)
@@ -309,19 +333,31 @@ namespace ShaftkitMSA2_Parser
                 csv.NextRecord();
 
                 // write influence
+                csv.WriteComment(" Influence (kN/mm)");
+                csv.NextRecord();
+                for (int i = 0; i < inf.Count; i++)
+                {
+                    for (int j = 0; j < inf[i].Count; j++)
+                    {
+                        csv.WriteField(inf[i][j]);
+                    }
+                    csv.NextRecord();
+                }
+                csv.NextRecord();
+
                 // write conc_mass summary
                 // write reactions table
 
                 csv.WriteComment("Elements");
                 csv.NextRecord();
-                csv.WriteComment("Num, OD (m), ID (m), Length (m), E (GPa), G (GPa), Density (kg/m^3), Mass (kg), Inertia (m^4), Sec. Modulus (m^3)");
+                csv.WriteComment(" , OD (m), ID (m), Length (m), E (GPa), G (GPa), Density (kg/m^3), Mass (kg), Inertia (m^4), Sec. Modulus (m^3)");
                 csv.NextRecord();
                 csv.WriteRecords(Elems);
                 csv.NextRecord();
 
                 csv.WriteComment("Nodes");
                 csv.NextRecord();
-                csv.WriteComment("Num, x (m), Disp. (mm), Slope (mrad), Moment (kNm), Shear (kN), Stress (MPa)");
+                csv.WriteComment(" , x (m), Disp. (mm), Slope (mrad), Moment (kNm), Shear (kN), Stress (MPa)");
                 csv.NextRecord();
                 csv.WriteRecords(Nodes);
                 csv.NextRecord();
