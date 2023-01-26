@@ -41,6 +41,7 @@ namespace ShaftkitMSA2_Parser
 
         // Influence List
         public List<List<string>> inf = new List<List<string>>();
+        public List<List<float>> inf2 = new List<List<float>>();
 
         // CSV writer Lists
         List<Elem> Elems = new List<Elem>();
@@ -307,10 +308,18 @@ namespace ShaftkitMSA2_Parser
                         }
                     }
                 }
-
             }
 
+            // Convert influence strings to float
+            for (byte i = 0; i < ReactStraight.Count(); i++)
+            {
+                for (byte j = 0; j < inf[i].Count(); j++)
+                {
+                    inf2[i][j] = float.Parse(inf[i][j], NumberStyles.Float) / 1000;
+                }
+            }
         }
+
 
         public void WriteCSV(string filename)
         {
@@ -335,11 +344,11 @@ namespace ShaftkitMSA2_Parser
                 // write influence
                 csv.WriteComment(" Influence (kN/mm)");
                 csv.NextRecord();
-                for (int i = 0; i < inf.Count; i++)
+                for (int i = 0; i < inf2.Count; i++)
                 {
-                    for (int j = 0; j < inf[i].Count; j++)
+                    for (int j = 0; j < inf2[i].Count; j++)
                     {
-                        csv.WriteField(inf[i][j]);
+                        csv.WriteField(inf2[i][j]);
                     }
                     csv.NextRecord();
                 }

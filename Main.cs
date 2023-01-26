@@ -33,93 +33,29 @@ namespace ShaftkitMSA2_Parser
             chart1.Update();
 
 
-
-            //// write out nodeX
-            //txtOutput.Text += "Nodes\r\n";
-            //foreach (string item in FileHelper.NodeX)
-            //{
-            //    txtOutput.Text += $"{item}\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-
-            //// write out element OD
-            //txtOutput.Text += "Elements\r\n";
-            //foreach (string item in FileHelper.ElemNum)
-            //{
-            //    txtOutput.Text += $"{item}\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-            // write out concmass
-            //txtOutput.Text += "ConcMass\r\n";
-            //foreach (float item in FileHelper.ConcMassVal)
-            //{
-            //    txtOutput.Text += $"{item}\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-            //// write out displacement & slope
-            //txtOutput.Text += "Displacement & Slope\r\n";
-            //for (int i = 0; i < FileHelper.disp.Count; i++)
-            //{
-            //    txtOutput.Text += $"{FileHelper.NodeNum[i]} {FileHelper.disp[i]} {FileHelper.slope[i]} \r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-            // write out bending, shear, stress
-            //txtOutput.Text += "Moment, Shear\r\n";
-            //for (int i = 0; i < FileHelper.disp.Count; i++)
-            //{
-            //    txtOutput.Text += $"{FileHelper.NodeNum[i]} {FileHelper.moment[i]} {FileHelper.shear[i]}\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-            // check spring reactions
-            //txtOutput.Text += "Reactions\r\n";
-            //for (int i = 0; i < FileHelper.reactVal.Count; i++)
-            //{
-            //    txtOutput.Text += $"{FileHelper.reactNode[i]} {FileHelper.reactVal[i]}\r\n";
-            //}
-            //txtOutput.Text += "\r\n";
-
-            // check influence
-            txtOutput.Text += "influence\r\n";
-            List<List<string>> inf = new List<List<string>>();
-            inf = data.inf;
-            for (int i = 0; i < inf.Count; i++)
-            {
-                for (int j = 0; j < inf[i].Count; j++)
-                {
-                    txtOutput.Text += $"{inf[i][j]} \r\n";
-                }
-                txtOutput.Text += $"\r\n";
-            }
-            txtOutput.Text += "\r\n";
-
-            //series d = new series("displacment (mm)", 1);
-            //d.charttype = seriescharttype.line;
-            //d.points.addxy(0, 0);
-            //d.points.addxy(1, 1);
-            //d.points.addxy(2, 2);
-            //chart1.series.add(d);
-            //d.enabled = true;
+            ////series d = new series("displacment (mm)", 1);
+            ////d.charttype = seriescharttype.line;
+            ////d.points.addxy(0, 0);
+            ////d.points.addxy(1, 1);
+            ////d.points.addxy(2, 2);
+            ////chart1.series.add(d);
+            ////d.enabled = true;
 
 
-            //chart1.Series.Add("Shear").YValueMembers = "Shear";
-            //chart1.Series["Shear"].ChartType = SeriesChartType.Line;
-            //chart1.Series["Shear"].XValueType = ChartValueType.Int32;
-            //chart1.Series["Shear"].YValueType = ChartValueType.Int32;
+            ////chart1.Series.Add("Shear").YValueMembers = "Shear";
+            ////chart1.Series["Shear"].ChartType = SeriesChartType.Line;
+            ////chart1.Series["Shear"].XValueType = ChartValueType.Int32;
+            ////chart1.Series["Shear"].YValueType = ChartValueType.Int32;
 
-            //chart1.Series.Add("Disp").YValueMembers = "Disp";
-            //chart1.Series["Disp"].ChartType = SeriesChartType.Line;
-            //chart1.Series["Disp"].XValueType = ChartValueType.Int32;
-            //chart1.Series["Disp"].YValueType = ChartValueType.Int32;
+            ////chart1.Series.Add("Disp").YValueMembers = "Disp";
+            ////chart1.Series["Disp"].ChartType = SeriesChartType.Line;
+            ////chart1.Series["Disp"].XValueType = ChartValueType.Int32;
+            ////chart1.Series["Disp"].YValueType = ChartValueType.Int32;
 
-            //chart1.Series.Add("Slope").YValueMembers = "Slope";
-            //chart1.Series["Slope"].ChartType = SeriesChartType.Line;
-            //chart1.Series["Slope"].XValueType = ChartValueType.Int32;
-            //chart1.Series["Slope"].YValueType = ChartValueType.Int32;
+            ////chart1.Series.Add("Slope").YValueMembers = "Slope";
+            ////chart1.Series["Slope"].ChartType = SeriesChartType.Line;
+            ////chart1.Series["Slope"].XValueType = ChartValueType.Int32;
+            ////chart1.Series["Slope"].YValueType = ChartValueType.Int32;
 
         }
 
