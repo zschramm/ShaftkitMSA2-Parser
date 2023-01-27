@@ -5,8 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using CsvHelper;
-using ScottPlot.MarkerShapes;
-using ScottPlot.Palettes;
 
 namespace ShaftkitMSA2_Parser
 {
@@ -44,7 +42,7 @@ namespace ShaftkitMSA2_Parser
         List<float> ReactY = new List<float>();
         List<float> ReactZero = new List<float>();
         List<float> ReactVal = new List<float>();
-        string?[] ReactStraight;
+        List<float> ReactStraight = new List<float>();
 
         // Influence List
         public List<List<string>> inf = new List<List<string>>();
@@ -53,7 +51,6 @@ namespace ShaftkitMSA2_Parser
         // CSV writer Lists
         List<Elem> Elems = new List<Elem>();
         List<Node> Nodes = new List<Node>();
-        List<ConcMass> ConcMasses = new List<ConcMass>();
 
         // Summary Data
         float TotalMass = new float();
@@ -139,19 +136,21 @@ namespace ShaftkitMSA2_Parser
                         newline = CleanLine(lines[i]);
                         while (newline[0] != "CONC")
                         {
-                            var record = new ConcMass();
-                            record.Node = byte.Parse(newline[1]);
-                            record.Mass = float.Parse(newline[2]);
-                            ConcMasses.Add(record);
+                            float val = float.Parse(newline[2]);
+                            if (val > 0)
+                            {
+                                ConcMassNode.Add(byte.Parse(newline[0]));
+                                ConcMassVal.Add(val);
 
-                            TotalConcMass += record.Mass;
+                                TotalConcMass += val;
+                            }
 
                             i++;
                             newline = CleanLine(lines[i]);
                         }
                     }
 
-                    // Parse Reactions
+                    // Parse Reaction Node
                     if (newline[0] == "SPRING")
                     {
                         i = i + 5;
@@ -159,12 +158,30 @@ namespace ShaftkitMSA2_Parser
                         while (newline[0] != null)
                         {
                             ReactNode.Add(byte.Parse(newline[0]));
-                            ReactVal.Add(float.Parse(newline[2]));
 
                             i++;
                             newline = CleanLine(lines[i]);
                         }
                     }
+
+                    // Parse reaction value
+                    if (newline[0] == "Bearing")
+                    {
+                        i = i + 4;                
+                        newline = CleanLine(lines[i]);
+                        
+                        if (newline[0] == "0")
+                        {
+                            i++;
+                            newline = CleanLine(lines[i]);
+                            foreach (string val in newline)
+                            {
+                                ReactVal.Add(float.Parse(val) / 1000);
+                            }                            
+                            
+                        }
+                    }
+
 
                     // Parse Displacements & Slope
                     if (newline[0] == "DISPLACEMENTS")
@@ -216,10 +233,16 @@ namespace ShaftkitMSA2_Parser
                     {
                         i = i + 3;
                         newline = CleanLine(lines[i]);
-                        ReactStraight = newline;
 
+                        // straight reactions
+                        foreach (string val in newline)
+                        {
+                            ReactStraight.Add(float.Parse(val) / 1000);
+                        }
+
+
+                        // influence table values
                         i++;
-
                         newline = CleanLine(lines[i]);
                         while (newline[0] != null)
                         {
@@ -373,8 +396,38 @@ namespace ShaftkitMSA2_Parser
                 csv.NextRecord();
 
                 // write conc_mass summary
-                // write reactions table
+                csv.WriteComment(" Concentrated Masses");
+                csv.NextRecord();
+                csv.WriteComment(" Node, Mass (kg)");
+                csv.NextRecord();
+                for (int i = 0; i < ConcMassNode.Count; i++)
+                {
+                    csv.WriteField(ConcMassNode[i]);
+                    csv.WriteField(ConcMassVal[i]);
+                    csv.NextRecord();
+                }
+                csv.NextRecord();
 
+                // write reactions table
+                csv.WriteComment(" Bearing Reactions");
+                csv.NextRecord();
+                csv.WriteComment(" Node, x (m), Straight (kN), Offset (mm), Reaction (kN), Name, L/D");
+                csv.NextRecord();
+
+                for (int i = 0; i < ReactNode.Count; i++)
+                {
+                    csv.WriteField(ReactNode[i]);
+                    csv.WriteField(NodeX[ReactNode[i] - 1]);
+                    csv.WriteField(ReactStraight[i]);
+                    csv.WriteField(Disp[ReactNode[i] - 1]);
+                    csv.WriteField(ReactVal[i]);
+                    csv.NextRecord();
+                }
+                csv.NextRecord();
+
+
+
+                // write elements table
                 csv.WriteComment("Elements");
                 csv.NextRecord();
                 csv.WriteComment(" , OD (m), ID (m), Length (m), E (GPa), G (GPa), Density (kg/m^3), Mass (kg), Inertia (m^4), Sec. Modulus (m^3)");
@@ -382,6 +435,7 @@ namespace ShaftkitMSA2_Parser
                 csv.WriteRecords(Elems);
                 csv.NextRecord();
 
+                // write nodes table
                 csv.WriteComment("Nodes");
                 csv.NextRecord();
                 csv.WriteComment(" , x (m), Disp. (mm), Slope (mrad), Moment (kNm), Shear (kN), Stress (MPa)");
@@ -417,39 +471,6 @@ namespace ShaftkitMSA2_Parser
         }
 
     }
-
-    public class Elem
-    {
-        public byte Num { get; set; }
-        public float OD { get; set; }
-        public float ID { get; set; }
-        public float Length { get; set; }
-        public float E { get; set; }
-        public float G { get; set; }
-        public float Rho { get; set; }
-        public float Mass { get; set; }
-        public float PolInertia { get; set; }
-        public float SecMod { get; set; }
-
-    }
-
-    public class Node
-    {
-        public byte Num { get; set; }
-        public float X { get; set; }
-        public float Disp { get; set; }
-        public float Slope { get; set; }
-        public float Moment { get; set; }
-        public float Shear { get; set; }
-        public float Stress { get; set; }
-    }
-
-    public class ConcMass
-    {
-        public byte Node { get; set; }
-        public float Mass { get; set; }
-    }
-
 
     public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
     {
@@ -535,6 +556,32 @@ namespace ShaftkitMSA2_Parser
 
         }
 
+    }
+
+    public class Elem
+    {
+        public byte Num { get; set; }
+        public float OD { get; set; }
+        public float ID { get; set; }
+        public float Length { get; set; }
+        public float E { get; set; }
+        public float G { get; set; }
+        public float Rho { get; set; }
+        public float Mass { get; set; }
+        public float PolInertia { get; set; }
+        public float SecMod { get; set; }
+
+    }
+
+    public class Node
+    {
+        public byte Num { get; set; }
+        public float X { get; set; }
+        public float Disp { get; set; }
+        public float Slope { get; set; }
+        public float Moment { get; set; }
+        public float Shear { get; set; }
+        public float Stress { get; set; }
     }
 
 }
