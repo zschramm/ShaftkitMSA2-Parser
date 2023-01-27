@@ -35,24 +35,24 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.btnParse = new System.Windows.Forms.Button();
             this.txtInputFile = new System.Windows.Forms.TextBox();
-            this.txtOutputFile = new System.Windows.Forms.TextBox();
+            this.txtOutputFolder = new System.Windows.Forms.TextBox();
             this.fileHelperBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnOpenFileDialog = new System.Windows.Forms.Button();
             this.btnSaveFileDialog = new System.Windows.Forms.Button();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // btnParse
             // 
-            this.btnParse.Location = new System.Drawing.Point(69, 135);
+            this.btnParse.Location = new System.Drawing.Point(713, 123);
             this.btnParse.Margin = new System.Windows.Forms.Padding(2);
             this.btnParse.Name = "btnParse";
-            this.btnParse.Size = new System.Drawing.Size(247, 74);
+            this.btnParse.Size = new System.Drawing.Size(136, 36);
             this.btnParse.TabIndex = 0;
             this.btnParse.Text = "Run";
             this.btnParse.UseVisualStyleBackColor = true;
@@ -69,18 +69,18 @@
     ".OUT";
             this.txtInputFile.TextChanged += new System.EventHandler(this.txtInputFile_TextChanged);
             // 
-            // txtOutputFile
+            // txtOutputFolder
             // 
-            this.txtOutputFile.Location = new System.Drawing.Point(69, 86);
-            this.txtOutputFile.Margin = new System.Windows.Forms.Padding(2);
-            this.txtOutputFile.Name = "txtOutputFile";
-            this.txtOutputFile.Size = new System.Drawing.Size(698, 27);
-            this.txtOutputFile.TabIndex = 2;
-            this.txtOutputFile.Text = "c:\\temp\\output.csv";
+            this.txtOutputFolder.Location = new System.Drawing.Point(69, 86);
+            this.txtOutputFolder.Margin = new System.Windows.Forms.Padding(2);
+            this.txtOutputFolder.Name = "txtOutputFolder";
+            this.txtOutputFolder.Size = new System.Drawing.Size(698, 27);
+            this.txtOutputFolder.TabIndex = 2;
+            this.txtOutputFolder.Text = "c:\\temp";
             // 
             // txtOutput
             // 
-            this.txtOutput.Location = new System.Drawing.Point(344, 135);
+            this.txtOutput.Location = new System.Drawing.Point(69, 128);
             this.txtOutput.Margin = new System.Windows.Forms.Padding(2);
             this.txtOutput.Multiline = true;
             this.txtOutput.Name = "txtOutput";
@@ -136,7 +136,7 @@
             this.Controls.Add(this.btnSaveFileDialog);
             this.Controls.Add(this.btnOpenFileDialog);
             this.Controls.Add(this.txtOutput);
-            this.Controls.Add(this.txtOutputFile);
+            this.Controls.Add(this.txtOutputFolder);
             this.Controls.Add(this.txtInputFile);
             this.Controls.Add(this.btnParse);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -154,13 +154,13 @@
 
         private Button btnParse;
         private TextBox txtInputFile;
-        private TextBox txtOutputFile;
+        private TextBox txtOutputFolder;
         private BindingSource fileHelperBindingSource;
         private TextBox txtOutput;
         private OpenFileDialog openFileDialog1;
         private Button btnOpenFileDialog;
         private Button btnSaveFileDialog;
-        private SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private FolderBrowserDialog folderBrowserDialog1;
     }
 }

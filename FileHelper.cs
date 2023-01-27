@@ -1,6 +1,9 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
 using CsvHelper;
 
 
@@ -139,7 +142,7 @@ namespace ShaftkitMSA2_Parser
 
                             TotalConcMass += record.Mass;
 
-                            i += 2;
+                            i++;
                             newline = CleanLine(lines[i]);
                         }
                     }
@@ -290,7 +293,6 @@ namespace ShaftkitMSA2_Parser
 
             TotalMass = TotalElementMass + TotalConcMass;
 
-
             // Fix influence matrix
             for (byte i = 0; i < ReactStraight.Count(); i++)
             {
@@ -313,10 +315,12 @@ namespace ShaftkitMSA2_Parser
             // Convert influence strings to float
             for (byte i = 0; i < ReactStraight.Count(); i++)
             {
+                List<float> temp = new List<float>();
                 for (byte j = 0; j < inf[i].Count(); j++)
                 {
-                    inf2[i][j] = float.Parse(inf[i][j], NumberStyles.Float) / 1000;
+                    temp.Add(float.Parse(inf[i][j], NumberStyles.Float) / 1000);
                 }
+                inf2.Add(temp);
             }
         }
 
@@ -393,9 +397,31 @@ namespace ShaftkitMSA2_Parser
 
             return data;
         }
+
+        public void PlotDisp(string outputPath)
+        {
+            // try https://stackoverflow.com/questions/37791187/c-sharp-creating-custom-chart-class
+            // create series of x and y
+
+            //List<xy> srs = new List<xy>();
+            //srs = PrepareSeries(NodeX, Disp);
+
+            //Chart chartDisp = new Chart();3
+            //chartDisp.DataSource = srs;
+            //chartDisp.Series.Add("Displacement");
+            //chartDisp.Series[0].XValueMember = "x";
+            //chartDisp.Series[0].YValueMembers = "y";
+            //chartDisp.Series[0].AxisLabel = "Displacement (mm)";
+            //chartDisp.Series[0].ChartType = SeriesChartType.Line;
+            //chartDisp.DataBind();
+            //chartDisp.Update();
+            //chartDisp.SaveImage(outputPath + "\\disp.jpg", ChartImageFormat.Jpeg);
+
+            clsCustomChart chartDisp = new clsCustomChart("Displacement", NodeX, Disp);
+
+        }
+
     }
-
-
 
     public class xy
     {
@@ -434,4 +460,75 @@ namespace ShaftkitMSA2_Parser
         public byte Node { get; set; }
         public float Mass { get; set; }
     }
+
+
+    public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
+    {
+        public clsCustomChart(string strChartTitle, List<float> X, List<float> Y)
+        {
+            //  Create the chart
+
+            //  Create the chart
+            // Chart this = new Chart();
+            this.BackColor = Color.FromArgb(50, Color.DarkGray);
+            this.BorderlineDashStyle = ChartDashStyle.Solid;
+            this.BorderlineColor = Color.Black;
+            this.Width = 300;
+            this.Height = 300;
+
+            //  Create the legend
+            Legend l = new Legend("Legend");
+            l.Docking = Docking.Bottom;
+            l.BackColor = Color.Transparent;
+            this.Legends.Add(l);
+
+            //  Create the chart area
+            ChartArea a = new ChartArea("ChartArea1");
+            a.Area3DStyle.Enable3D = false;
+            a.Area3DStyle.WallWidth = 0;
+            a.BackColor = Color.FromArgb(100, Color.Black);
+
+            this.ChartAreas.Add(a);
+
+            //  Create the axis
+            a.AxisX.LineColor = Color.Silver;
+            a.AxisX.MajorGrid.Enabled = true;
+            a.AxisX.MinorGrid.Enabled = false;
+            a.AxisX.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+
+            a.AxisY.LineColor = Color.Silver;
+            a.AxisY.MajorGrid.Enabled = true;
+            a.AxisY.MinorGrid.Enabled = false;
+            a.AxisY.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+
+            //  Chart title
+            this.Titles.Add(new Title(strChartTitle));
+
+            //  Add the data
+            //  Create the data series
+            Series s = new Series("IN");
+            s.ChartType = SeriesChartType.Line;
+
+            X.ForEach(x => { s.Points.Add(x); });
+            s.Color = Color.FromArgb(200, Color.Red);
+            s.BorderWidth = 3;
+
+            Series s2 = new Series("OUT");
+            s2.ChartType = SeriesChartType.Line;
+
+            Y.ForEach(x => { s2.Points.Add(x); });
+            s2.Color = Color.FromArgb(200, Color.Green);
+            s2.BorderWidth = 3;
+
+            this.Series.Add(s);
+            this.Series.Add(s2);
+
+            this.SaveImage("c:\\temp\\" + DateTime.Now.ToString("ddMMyyyy_HHmmss") + ".jpeg", ChartImageFormat.Jpeg);
+
+        }
+
+    }
+
 }
