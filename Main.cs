@@ -34,7 +34,7 @@ namespace ShaftkitMSA2_Parser
             helper.ReadFromFile(txtInputFile.Text);
             helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
 
-            helper.PlotDisp(txtOutputFolder.Text);
+            helper.CreatePlots(txtOutputFolder.Text);
 
         }
 

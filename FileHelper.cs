@@ -5,8 +5,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 using CsvHelper;
-
-
+using ScottPlot.MarkerShapes;
+using ScottPlot.Palettes;
 
 namespace ShaftkitMSA2_Parser
 {
@@ -36,9 +36,13 @@ namespace ShaftkitMSA2_Parser
         public List<float> Slope = new List<float>();
         public List<float> Moment = new List<float>();
         public List<float> Shear = new List<float>();
+        public List<float> Stress = new List<float>();
 
         // Reaction Lists
         List<byte> ReactNode = new List<byte>();
+        List<float> ReactX = new List<float>();
+        List<float> ReactY = new List<float>();
+        List<float> ReactZero = new List<float>();
         List<float> ReactVal = new List<float>();
         string?[] ReactStraight;
 
@@ -288,6 +292,7 @@ namespace ShaftkitMSA2_Parser
                 {
                     record.Stress = Moment[i] * (ElemOD[i - 1] / 2) / Elems[i - 1].PolInertia / 1000;
                 }
+                Stress.Add(record.Stress);
                 Nodes.Add(record);
             }
 
@@ -322,6 +327,15 @@ namespace ShaftkitMSA2_Parser
                 }
                 inf2.Add(temp);
             }
+
+            // Set ReactX and ReactY for bearing locations
+            foreach (byte i in ReactNode)
+            {
+                ReactX.Add(NodeX[i - 1]);
+                ReactY.Add(Disp[i - 1]);
+                ReactZero.Add(0);
+            }
+
         }
 
 
@@ -375,58 +389,33 @@ namespace ShaftkitMSA2_Parser
                 csv.WriteRecords(Nodes);
                 csv.NextRecord();
 
-
-
-
-
             }
         }
 
-        public List<xy> PrepareSeries(List<float> x, List<float> y)
-        {
-            List<xy> data = new List<xy>();
-
-            for (byte i = 0; i < x.Count; i++)
-            {
-                xy rec = new xy();
-
-                rec.x = x[i];
-                rec.y = y[i];
-                data.Add(rec);
-            }
-
-            return data;
-        }
-
-        public void PlotDisp(string outputPath)
+        public void CreatePlots(string outputPath)
         {
             // try https://stackoverflow.com/questions/37791187/c-sharp-creating-custom-chart-class
-            // create series of x and y
+            string filename = outputPath + "\\disp.jpg";
+            clsCustomChart chartDisp = new clsCustomChart(filename, "Position (m)", "Displacement (mm)",
+                                                          NodeX, Disp, ReactX, ReactY);
 
-            //List<xy> srs = new List<xy>();
-            //srs = PrepareSeries(NodeX, Disp);
+            filename = outputPath + "\\slope.jpg";
+            clsCustomChart chartSlope = new clsCustomChart(filename, "Position (m)", "Slope (mrad)",
+                                                          NodeX, Slope, ReactX, ReactZero);
 
-            //Chart chartDisp = new Chart();3
-            //chartDisp.DataSource = srs;
-            //chartDisp.Series.Add("Displacement");
-            //chartDisp.Series[0].XValueMember = "x";
-            //chartDisp.Series[0].YValueMembers = "y";
-            //chartDisp.Series[0].AxisLabel = "Displacement (mm)";
-            //chartDisp.Series[0].ChartType = SeriesChartType.Line;
-            //chartDisp.DataBind();
-            //chartDisp.Update();
-            //chartDisp.SaveImage(outputPath + "\\disp.jpg", ChartImageFormat.Jpeg);
+            filename = outputPath + "\\shear.jpg";
+            clsCustomChart chartShear = new clsCustomChart(filename, "Position (m)", "Shear (kN)",
+                                                          NodeX, Shear, ReactX, ReactZero);
 
-            clsCustomChart chartDisp = new clsCustomChart("Displacement", NodeX, Disp);
+            filename = outputPath + "\\moment.jpg";
+            clsCustomChart chartMoment = new clsCustomChart(filename, "Position (m)", "Bending Moment (kNm)",
+                                                          NodeX, Moment, ReactX, ReactZero);
 
+            filename = outputPath + "\\stress.jpg";
+            clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
+                                                          NodeX, Stress, ReactX, ReactZero);
         }
 
-    }
-
-    public class xy
-    {
-        public float x { get; set; }
-        public float y { get; set; }
     }
 
     public class Elem
@@ -464,68 +453,85 @@ namespace ShaftkitMSA2_Parser
 
     public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
     {
-        public clsCustomChart(string strChartTitle, List<float> X, List<float> Y)
+        public clsCustomChart(string filename,
+                              string xLabel,
+                              string yLabel,
+                              List<float> X,
+                              List<float> Y,
+                              List<float> ReactX,
+                              List<float> ReactY)
         {
-            //  Create the chart
+
+            // setup chart options    
+            Font textFont = new Font("Arial", 24);
 
             //  Create the chart
             // Chart this = new Chart();
-            this.BackColor = Color.FromArgb(50, Color.DarkGray);
+            this.BackColor = Color.FromArgb(50, Color.White);
             this.BorderlineDashStyle = ChartDashStyle.Solid;
             this.BorderlineColor = Color.Black;
-            this.Width = 300;
-            this.Height = 300;
-
-            //  Create the legend
-            Legend l = new Legend("Legend");
-            l.Docking = Docking.Bottom;
-            l.BackColor = Color.Transparent;
-            this.Legends.Add(l);
+            this.Width = 1500;
+            this.Height = 800;
 
             //  Create the chart area
             ChartArea a = new ChartArea("ChartArea1");
             a.Area3DStyle.Enable3D = false;
             a.Area3DStyle.WallWidth = 0;
-            a.BackColor = Color.FromArgb(100, Color.Black);
-
+            a.BackColor = Color.FromArgb(100, Color.White);
             this.ChartAreas.Add(a);
 
             //  Create the axis
-            a.AxisX.LineColor = Color.Silver;
+            a.AxisX.LineColor = Color.Black;
             a.AxisX.MajorGrid.Enabled = true;
             a.AxisX.MinorGrid.Enabled = false;
             a.AxisX.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
-            a.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            a.AxisX.LabelStyle.Font = textFont;
+            a.AxisX.LabelStyle.Format = "0";
+            a.AxisX.Title = xLabel;
+            a.AxisX.TitleFont = textFont;
 
-            a.AxisY.LineColor = Color.Silver;
+            a.AxisY.LineColor = Color.Black;
             a.AxisY.MajorGrid.Enabled = true;
             a.AxisY.MinorGrid.Enabled = false;
             a.AxisY.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
-            a.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            a.AxisY.LabelStyle.Font = textFont;
+            a.AxisY.LabelStyle.Format = "0.0";
+            a.AxisY.Title = yLabel;
+            a.AxisY.TitleFont = textFont;
 
             //  Chart title
-            this.Titles.Add(new Title(strChartTitle));
+            //this.Titles.Add(new Title(strChartTitle));
 
             //  Add the data
             //  Create the data series
-            Series s = new Series("IN");
+            Series s = new Series("Series1");
             s.ChartType = SeriesChartType.Line;
 
-            X.ForEach(x => { s.Points.Add(x); });
-            s.Color = Color.FromArgb(200, Color.Red);
-            s.BorderWidth = 3;
+            for (int i = 0; i < X.Count; i++)
+            {
+                s.Points.AddXY(X[i], Y[i]);
+            }
 
-            Series s2 = new Series("OUT");
+            s.Color = Color.FromArgb(200, Color.DarkBlue);
+            s.BorderWidth = 3;
+            this.Series.Add(s);
+
+            //  Create the bearing series
+            Series s2 = new Series("Series2");
             s2.ChartType = SeriesChartType.Line;
 
-            Y.ForEach(x => { s2.Points.Add(x); });
-            s2.Color = Color.FromArgb(200, Color.Green);
-            s2.BorderWidth = 3;
+            for (int i = 0; i < ReactX.Count; i++)
+            {
+                s2.Points.AddXY(ReactX[i], ReactY[i]);
+            }
 
-            this.Series.Add(s);
+            s2.Color = Color.FromArgb(0, Color.Black);
+            s2.MarkerStyle = MarkerStyle.Triangle;
+            s2.MarkerColor = Color.FromArgb(200, Color.Red);
+            s2.MarkerSize = 20;
             this.Series.Add(s2);
 
-            this.SaveImage("c:\\temp\\" + DateTime.Now.ToString("ddMMyyyy_HHmmss") + ".jpeg", ChartImageFormat.Jpeg);
+            this.SaveImage(filename, ChartImageFormat.Jpeg);
 
         }
 
