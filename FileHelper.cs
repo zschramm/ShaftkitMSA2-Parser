@@ -62,24 +62,9 @@ namespace ShaftkitMSA2_Parser
         {
             string trimmed = line.Trim();
             string[] newline = trimmed.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
-            //string[] newline = nextline.Except(new List<string> { string.Empty }).ToArray();
-
-            // need to return something if string{0}
-
 
             return newline;
         }
-
-        //private static IEnumerable<String> SplitInParts(String s, Int32 partLength)
-        //{
-        //    if (s == null)
-        //        throw new ArgumentNullException(nameof(s));
-        //    if (partLength <= 0)
-        //        throw new ArgumentException("Part length has to be positive.", nameof(partLength));
-
-        //    for (var i = 0; i < s.Length; i += partLength)
-        //        yield return s.Substring(i, Math.Min(partLength, s.Length - i));
-        //}
 
         public void ReadFromFile(string filename)
         {
@@ -361,7 +346,6 @@ namespace ShaftkitMSA2_Parser
 
         }
 
-
         public void WriteCSV(string filename)
         {
             using (var writer = new StreamWriter(filename))
@@ -468,6 +452,7 @@ namespace ShaftkitMSA2_Parser
             filename = outputPath + "\\stress.jpg";
             clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
                                                           NodeX, Stress, ReactX, ReactZero);
+
         }
 
     }

@@ -23,6 +23,7 @@ namespace ShaftkitMSA2_Parser
 
             txtInputFile.Text = Properties.Settings1.Default.InputPath;
             txtOutputFolder.Text = Properties.Settings1.Default.OutputPath;
+
         }
 
         private void btnParse_Click(object sender, EventArgs e)
@@ -35,10 +36,7 @@ namespace ShaftkitMSA2_Parser
 
             helper.CreatePlots(txtOutputFolder.Text);
 
-        }
-
-        private void txtInputFile_TextChanged(object sender, EventArgs e)
-        {
+            this.Paint += new PaintEventHandler(MainForm_Paint);
 
         }
 
@@ -87,6 +85,18 @@ namespace ShaftkitMSA2_Parser
             {
                 txtOutputFolder.Text = folderBrowserDialog1.SelectedPath;
             }
+        }
+
+        private void MainForm_Paint(object sender, PaintEventArgs e)
+        {
+            //create a graphics object from the form
+            Graphics g = this.CreateGraphics();
+            // create  a  pen object with which to draw
+            Pen p = new Pen(Color.Red, 7);  // draw the line
+            Brush b = new SolidBrush(Color.Red);
+            Rectangle r1 = new Rectangle(25, 25, 100, 100);
+
+            g.FillRectangle(b, r1);
         }
 
     }
