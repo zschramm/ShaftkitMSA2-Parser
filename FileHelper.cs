@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows.Forms.DataVisualization.Charting;
 using CsvHelper;
 
@@ -453,10 +454,126 @@ namespace ShaftkitMSA2_Parser
             clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
                                                           NodeX, Stress, ReactX, ReactZero);
 
+
+            filename = outputPath + "\\model.jpg";
+            PlotModel(filename, NodeX, ElemOD, ElemID);
+
         }
+
+
+        private void PlotModel(string filename, List<float> X, List<float> OD, List<float> ID)
+        {
+            Chart chartModel = new Chart();
+
+            // setup chart options    
+            Font textFont = new Font("Arial", 24);
+
+            //  Create the chart
+            // Chart this = new Chart();
+            chartModel.BackColor = Color.FromArgb(50, Color.White);
+            chartModel.BorderlineDashStyle = ChartDashStyle.Solid;
+            chartModel.BorderlineColor = Color.Black;
+            chartModel.Width = 1500;
+            chartModel.Height = 800;
+
+            //  Create the chart area
+            ChartArea a = new ChartArea("ChartArea1");
+            a.Area3DStyle.Enable3D = false;
+            a.Area3DStyle.WallWidth = 0;
+            a.BackColor = Color.FromArgb(100, Color.White);
+            chartModel.ChartAreas.Add(a);
+
+            //  Create the axis
+            a.AxisX.LineColor = Color.Black;
+            a.AxisX.MajorGrid.Enabled = true;
+            a.AxisX.MinorGrid.Enabled = false;
+            a.AxisX.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisX.LabelStyle.Font = textFont;
+            a.AxisX.LabelStyle.Format = "0";
+            a.AxisX.Title = "Position (m)";
+            a.AxisX.TitleFont = textFont;
+            a.AxisX.Maximum = X[X.Count - 1] * 1.05;
+            a.AxisX.Minimum = -1 * (a.AxisX.Maximum - X[X.Count - 1]);
+
+            a.AxisY.LineColor = Color.Black;
+            a.AxisY.MajorGrid.Enabled = true;
+            a.AxisY.MinorGrid.Enabled = false;
+            a.AxisY.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisY.LabelStyle.Font = textFont;
+            a.AxisY.LabelStyle.Format = "0.0";
+            a.AxisY.Title = "Diameter (m)";
+            a.AxisY.TitleFont = textFont;
+            a.AxisY.Maximum = OD.Max() * 1.75;
+            a.AxisY.Minimum = -a.AxisY.Maximum;
+
+            // Plot line so axes will show up
+            //Series s = new Series("Line");
+            //s.ChartType = SeriesChartType.Line;
+
+            //s.Points.AddXY(0, 0);
+            //s.Points.AddXY(NodeX[NodeX.Count - 1], 0);
+            //s.Color = Color.FromArgb(200, Color.DarkBlue);
+            //s.BorderWidth = 1;
+            //chartModel.Series.Add(s);
+
+            // Plot OD series
+            Series s = new Series("OD");
+            s.ChartType = SeriesChartType.Area;
+
+            s.Points.AddXY(0, 0);
+            for (int i = 0; i < X.Count - 1; i++)
+            {
+                s.Points.AddXY(X[i], OD[i]);
+                s.Points.AddXY(X[i + 1], OD[i]);
+                s.Points.AddXY(X[i + 1], 0);
+            }
+
+            for (int i = X.Count - 2; i >= 0; i--)
+            {
+                s.Points.AddXY(X[i + 1], -OD[i]);
+                s.Points.AddXY(X[i], -OD[i]);
+                s.Points.AddXY(X[i], 0);
+            }
+            s.Color = Color.FromArgb(200, Color.LightBlue);
+            s.BorderWidth = 1;
+            chartModel.Series.Add(s);
+
+            Series s2 = new Series("ID");
+            s2.ChartType = SeriesChartType.Line;
+            s2.Color = Color.FromArgb(200, Color.Black);
+            s2.BorderWidth = 2;
+            chartModel.Series.Add(s2);
+
+            chartModel.DataManipulator.CopySeriesValues(s.Name, s2.Name);
+
+            // Initiate drawing shapes
+            // chartModel.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.PostPaint);
+
+            // save to file
+            chartModel.SaveImage(filename, ChartImageFormat.Jpeg);
+        }
+
+        //private void PostPaint(object sender, System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs e)
+        //{
+        //    Rectangle r1 = new Rectangle();
+        //    r1.X = 10;
+        //    r1.Y = 10;
+        //    r1.Width = 200;
+        //    r1.Height = 200;
+
+        //    Rectangle r2 = new Rectangle();
+        //    r2.X = 100;
+        //    r2.Y = 100;
+        //    r2.Width = 200;
+        //    r2.Height = 300;
+
+        //    e.ChartGraphics.Graphics.FillRectangle(new SolidBrush(Color.Red), r1);
+        //    e.ChartGraphics.Graphics.DrawRectangle(new Pen(Color.Black, 50), r2);
+        //}
 
     }
 
+   
     public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
     {
         public clsCustomChart(string filename,

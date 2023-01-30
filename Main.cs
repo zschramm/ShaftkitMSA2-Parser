@@ -36,8 +36,6 @@ namespace ShaftkitMSA2_Parser
 
             helper.CreatePlots(txtOutputFolder.Text);
 
-            this.Paint += new PaintEventHandler(MainForm_Paint);
-
         }
 
         private void btnOpenFileDialog_Click(object sender, EventArgs e)
@@ -85,18 +83,6 @@ namespace ShaftkitMSA2_Parser
             {
                 txtOutputFolder.Text = folderBrowserDialog1.SelectedPath;
             }
-        }
-
-        private void MainForm_Paint(object sender, PaintEventArgs e)
-        {
-            //create a graphics object from the form
-            Graphics g = this.CreateGraphics();
-            // create  a  pen object with which to draw
-            Pen p = new Pen(Color.Red, 7);  // draw the line
-            Brush b = new SolidBrush(Color.Red);
-            Rectangle r1 = new Rectangle(25, 25, 100, 100);
-
-            g.FillRectangle(b, r1);
         }
 
     }
