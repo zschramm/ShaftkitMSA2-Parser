@@ -474,7 +474,9 @@ namespace ShaftkitMSA2_Parser
             chartModel.BorderlineDashStyle = ChartDashStyle.Solid;
             chartModel.BorderlineColor = Color.Black;
             chartModel.Width = 1500;
-            chartModel.Height = 800;
+            chartModel.Height = 700;
+            chartModel.AntiAliasing = AntiAliasingStyles.All;
+            chartModel.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
 
             //  Create the chart area
             ChartArea a = new ChartArea("ChartArea1");
@@ -594,7 +596,9 @@ namespace ShaftkitMSA2_Parser
             this.BorderlineDashStyle = ChartDashStyle.Solid;
             this.BorderlineColor = Color.Black;
             this.Width = 1500;
-            this.Height = 800;
+            this.Height = 700;
+            this.AntiAliasing = AntiAliasingStyles.All;
+            this.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
 
             //  Create the chart area
             ChartArea a = new ChartArea("ChartArea1");
