@@ -521,15 +521,15 @@ namespace ShaftkitMSA2_Parser
             //chartModel.Series.Add(s);
 
             // Plot OD series
-            Series s = new Series("OD-1");
-            s.ChartType = SeriesChartType.Area;
+            Series sOD = new Series("OD");
+            sOD.ChartType = SeriesChartType.Area;
 
-            s.Points.AddXY(0, 0);
+            sOD.Points.AddXY(0, 0);
             for (int i = 0; i < X.Count - 1; i++)
             {
-                s.Points.AddXY(X[i], OD[i]);
-                s.Points.AddXY(X[i + 1], OD[i]);
-                s.Points.AddXY(X[i + 1], 0);
+                sOD.Points.AddXY(X[i], OD[i]);
+                sOD.Points.AddXY(X[i + 1], OD[i]);
+                sOD.Points.AddXY(X[i + 1], 0);
 
                 if (ReactX.Contains(X[i]))
                 {
@@ -539,21 +539,58 @@ namespace ShaftkitMSA2_Parser
 
             for (int i = X.Count - 2; i >= 0; i--)
             {
-                s.Points.AddXY(X[i + 1], -OD[i]);
-                s.Points.AddXY(X[i], -OD[i]);
-                s.Points.AddXY(X[i], 0);
+                sOD.Points.AddXY(X[i + 1], -OD[i]);
+                sOD.Points.AddXY(X[i], -OD[i]);
+                sOD.Points.AddXY(X[i], 0);
             }
-            s.Color = Color.FromArgb(200, Color.LightBlue);
-            s.BorderWidth = 1;
-            chartModel.Series.Add(s);
+            sOD.Color = Color.FromArgb(200, Color.LightBlue);
+            sOD.BorderWidth = 1;
+            chartModel.Series.Add(sOD);
 
-            Series s2 = new Series("OD-2");
-            s2.ChartType = SeriesChartType.Line;
-            s2.Color = Color.FromArgb(200, Color.Black);
-            s2.BorderWidth = 2;
-            chartModel.Series.Add(s2);
 
-            chartModel.DataManipulator.CopySeriesValues(s.Name, s2.Name);
+            // OD series to plot black border
+            Series sOD2 = new Series("OD Border");
+            sOD2.ChartType = SeriesChartType.Line;
+            sOD2.Color = Color.FromArgb(200, Color.Black);
+            sOD2.BorderWidth = 2;
+            chartModel.Series.Add(sOD2);
+
+            chartModel.DataManipulator.CopySeriesValues(sOD.Name, sOD2.Name);
+
+
+            // Plot ID series
+            Series sID = new Series("ID");
+            sID.ChartType = SeriesChartType.Area;
+
+            sID.Points.AddXY(0, 0);
+            for (int i = 0; i < X.Count - 1; i++)
+            {
+                sID.Points.AddXY(X[i], ID[i]);
+                sID.Points.AddXY(X[i + 1], ID[i]);
+                sID.Points.AddXY(X[i + 1], 0);
+
+            }
+
+            for (int i = X.Count - 2; i >= 0; i--)
+            {
+                sID.Points.AddXY(X[i + 1], -ID[i]);
+                sID.Points.AddXY(X[i], -ID[i]);
+                sID.Points.AddXY(X[i], 0);
+            }
+            sID.Color = Color.FromArgb(200, Color.White);
+            sID.BorderWidth = 1;
+            chartModel.Series.Add(sID);
+
+
+            // OD series to plot black border
+            Series sID2 = new Series("ID Border");
+            sID2.ChartType = SeriesChartType.Line;
+            sID2.Color = Color.FromArgb(200, Color.Black);
+            sID2.BorderWidth = 2;
+            chartModel.Series.Add(sID2);
+
+            chartModel.DataManipulator.CopySeriesValues(sID.Name, sID2.Name);
+
 
 
             //  Create the bearing series
