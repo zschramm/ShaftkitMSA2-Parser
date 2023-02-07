@@ -456,13 +456,15 @@ namespace ShaftkitMSA2_Parser
 
 
             filename = outputPath + "\\model.jpg";
-            PlotModel(filename, NodeX, ElemOD, ElemID);
+            PlotModel(filename, NodeX, ElemOD, ElemID, ReactX);
 
         }
 
 
-        private void PlotModel(string filename, List<float> X, List<float> OD, List<float> ID)
+        private void PlotModel(string filename, List<float> X, List<float> OD, List<float> ID, List<float> ReactX)
         {
+            List<float> ReactY = new List<float>();
+
             Chart chartModel = new Chart();
 
             // setup chart options    
@@ -519,7 +521,7 @@ namespace ShaftkitMSA2_Parser
             //chartModel.Series.Add(s);
 
             // Plot OD series
-            Series s = new Series("OD");
+            Series s = new Series("OD-1");
             s.ChartType = SeriesChartType.Area;
 
             s.Points.AddXY(0, 0);
@@ -528,6 +530,11 @@ namespace ShaftkitMSA2_Parser
                 s.Points.AddXY(X[i], OD[i]);
                 s.Points.AddXY(X[i + 1], OD[i]);
                 s.Points.AddXY(X[i + 1], 0);
+
+                if (ReactX.Contains(X[i]))
+                {
+                    ReactY.Add(OD[i]);
+                }
             }
 
             for (int i = X.Count - 2; i >= 0; i--)
@@ -540,13 +547,30 @@ namespace ShaftkitMSA2_Parser
             s.BorderWidth = 1;
             chartModel.Series.Add(s);
 
-            Series s2 = new Series("ID");
+            Series s2 = new Series("OD-2");
             s2.ChartType = SeriesChartType.Line;
             s2.Color = Color.FromArgb(200, Color.Black);
             s2.BorderWidth = 2;
             chartModel.Series.Add(s2);
 
             chartModel.DataManipulator.CopySeriesValues(s.Name, s2.Name);
+
+
+            //  Create the bearing series
+            Series s3 = new Series("Bearings");
+            s3.ChartType = SeriesChartType.Line;
+
+            for (int i = 0; i < ReactX.Count; i++)
+            {
+                s3.Points.AddXY(ReactX[i], -ReactY[i]);
+            }
+
+            s3.Color = Color.FromArgb(0, Color.Black);
+            s3.MarkerStyle = MarkerStyle.Triangle;
+            s3.MarkerColor = Color.FromArgb(200, Color.Red);
+            s3.MarkerSize = 20;
+            chartModel.Series.Add(s3);
+
 
             // Initiate drawing shapes
             // chartModel.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.PostPaint);
