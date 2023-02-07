@@ -454,16 +454,15 @@ namespace ShaftkitMSA2_Parser
             clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
                                                           NodeX, Stress, ReactX, ReactZero);
 
-
             filename = outputPath + "\\model.jpg";
-            PlotModel(filename, NodeX, ElemOD, ElemID, ReactX);
+            PlotModel(filename);
 
         }
 
 
-        private void PlotModel(string filename, List<float> X, List<float> OD, List<float> ID, List<float> ReactX)
+        private void PlotModel(string filename)
         {
-            List<float> ReactY = new List<float>();
+            List<float> ReactYOD = new List<float>();
 
             Chart chartModel = new Chart();
 
@@ -496,8 +495,8 @@ namespace ShaftkitMSA2_Parser
             a.AxisX.LabelStyle.Format = "0";
             a.AxisX.Title = "Position (m)";
             a.AxisX.TitleFont = textFont;
-            a.AxisX.Maximum = X[X.Count - 1] * 1.05;
-            a.AxisX.Minimum = -1 * (a.AxisX.Maximum - X[X.Count - 1]);
+            a.AxisX.Maximum = NodeX[NodeX.Count - 1] * 1.05;
+            a.AxisX.Minimum = -1 * (a.AxisX.Maximum - NodeX[NodeX.Count - 1]);
 
             a.AxisY.LineColor = Color.Black;
             a.AxisY.MajorGrid.Enabled = true;
@@ -507,41 +506,32 @@ namespace ShaftkitMSA2_Parser
             a.AxisY.LabelStyle.Format = "0.0";
             a.AxisY.Title = "Diameter (m)";
             a.AxisY.TitleFont = textFont;
-            a.AxisY.Maximum = OD.Max() * 1.75;
+            a.AxisY.Maximum = ElemOD.Max() * 1.75;
             a.AxisY.Minimum = -a.AxisY.Maximum;
 
-            // Plot line so axes will show up
-            //Series s = new Series("Line");
-            //s.ChartType = SeriesChartType.Line;
-
-            //s.Points.AddXY(0, 0);
-            //s.Points.AddXY(NodeX[NodeX.Count - 1], 0);
-            //s.Color = Color.FromArgb(200, Color.DarkBlue);
-            //s.BorderWidth = 1;
-            //chartModel.Series.Add(s);
 
             // Plot OD series
             Series sOD = new Series("OD");
             sOD.ChartType = SeriesChartType.Area;
 
             sOD.Points.AddXY(0, 0);
-            for (int i = 0; i < X.Count - 1; i++)
+            for (int i = 0; i < NodeX.Count - 1; i++)
             {
-                sOD.Points.AddXY(X[i], OD[i]);
-                sOD.Points.AddXY(X[i + 1], OD[i]);
-                sOD.Points.AddXY(X[i + 1], 0);
+                sOD.Points.AddXY(NodeX[i], ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i + 1], ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i + 1], 0);
 
-                if (ReactX.Contains(X[i]))
+                if (ReactX.Contains(NodeX[i]))
                 {
-                    ReactY.Add(OD[i]);
+                    ReactYOD.Add(ElemOD[i]);
                 }
             }
 
-            for (int i = X.Count - 2; i >= 0; i--)
+            for (int i = NodeX.Count - 2; i >= 0; i--)
             {
-                sOD.Points.AddXY(X[i + 1], -OD[i]);
-                sOD.Points.AddXY(X[i], -OD[i]);
-                sOD.Points.AddXY(X[i], 0);
+                sOD.Points.AddXY(NodeX[i + 1], -ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i], -ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i], 0);
             }
             sOD.Color = Color.FromArgb(200, Color.LightBlue);
             sOD.BorderWidth = 1;
@@ -563,19 +553,19 @@ namespace ShaftkitMSA2_Parser
             sID.ChartType = SeriesChartType.Area;
 
             sID.Points.AddXY(0, 0);
-            for (int i = 0; i < X.Count - 1; i++)
+            for (int i = 0; i < NodeX.Count - 1; i++)
             {
-                sID.Points.AddXY(X[i], ID[i]);
-                sID.Points.AddXY(X[i + 1], ID[i]);
-                sID.Points.AddXY(X[i + 1], 0);
+                sID.Points.AddXY(NodeX[i], ElemID[i]);
+                sID.Points.AddXY(NodeX[i + 1], ElemID[i]);
+                sID.Points.AddXY(NodeX[i + 1], 0);
 
             }
 
-            for (int i = X.Count - 2; i >= 0; i--)
+            for (int i = NodeX.Count - 2; i >= 0; i--)
             {
-                sID.Points.AddXY(X[i + 1], -ID[i]);
-                sID.Points.AddXY(X[i], -ID[i]);
-                sID.Points.AddXY(X[i], 0);
+                sID.Points.AddXY(NodeX[i + 1], -ElemID[i]);
+                sID.Points.AddXY(NodeX[i], -ElemID[i]);
+                sID.Points.AddXY(NodeX[i], 0);
             }
             sID.Color = Color.FromArgb(200, Color.White);
             sID.BorderWidth = 1;
@@ -591,15 +581,14 @@ namespace ShaftkitMSA2_Parser
 
             chartModel.DataManipulator.CopySeriesValues(sID.Name, sID2.Name);
 
-
-
+            
             //  Create the bearing series
             Series s3 = new Series("Bearings");
             s3.ChartType = SeriesChartType.Line;
 
             for (int i = 0; i < ReactX.Count; i++)
             {
-                s3.Points.AddXY(ReactX[i], -ReactY[i]);
+                s3.Points.AddXY(ReactX[i], -ReactYOD[i]);
             }
 
             s3.Color = Color.FromArgb(0, Color.Black);
