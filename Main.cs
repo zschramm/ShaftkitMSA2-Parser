@@ -35,6 +35,7 @@ namespace ShaftkitMSA2_Parser
 
                 // read data from input file
                 helper.ReadFromFile(txtInputFile.Text);
+
                 helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
 
                 helper.CreatePlots(txtOutputFolder.Text);
@@ -92,10 +93,29 @@ namespace ShaftkitMSA2_Parser
             }
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
+        //protected virtual bool IsFileinUse(FileInfo file)
+        //{
+        //    FileStream stream = null;
 
-        }
+        //    try
+        //    {
+        //        stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        //    }
+        //    catch (IOException)
+        //    {
+        //        //the file is unavailable because it is:
+        //        //still being written to
+        //        //or being processed by another thread
+        //        //or does not exist (has already been processed)
+        //        return true;
+        //    }
+        //    finally
+        //    {
+        //        if (stream != null)
+        //            stream.Close();
+        //    }
+        //    return false;
+        //}
     }
 
 }

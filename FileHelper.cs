@@ -459,7 +459,6 @@ namespace ShaftkitMSA2_Parser
 
         }
 
-
         private void PlotModel(string filename)
         {
             List<float> ReactYOD = new List<float>();
