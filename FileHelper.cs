@@ -597,31 +597,30 @@ namespace ShaftkitMSA2_Parser
             s3.MarkerSize = 20;
             chartModel.Series.Add(s3);
 
-
             // Initiate drawing shapes
-            // chartModel.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.PostPaint);
+            chartModel.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.PostPaint);
 
             // save to file
             chartModel.SaveImage(filename, ChartImageFormat.Jpeg);
         }
 
-        //private void PostPaint(object sender, System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs e)
-        //{
-        //    Rectangle r1 = new Rectangle();
-        //    r1.X = 10;
-        //    r1.Y = 10;
-        //    r1.Width = 200;
-        //    r1.Height = 200;
+        private void PostPaint(object sender, System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs e)
+        {
+            Rectangle r1 = new Rectangle();
+            r1.X = 10;
+            r1.Y = 10;
+            r1.Width = 200;
+            r1.Height = 200;
 
-        //    Rectangle r2 = new Rectangle();
-        //    r2.X = 100;
-        //    r2.Y = 100;
-        //    r2.Width = 200;
-        //    r2.Height = 300;
+            Rectangle r2 = new Rectangle();
+            r2.X = 100;
+            r2.Y = 100;
+            r2.Width = 200;
+            r2.Height = 300;
 
-        //    e.ChartGraphics.Graphics.FillRectangle(new SolidBrush(Color.Red), r1);
-        //    e.ChartGraphics.Graphics.DrawRectangle(new Pen(Color.Black, 50), r2);
-        //}
+            e.ChartGraphics.Graphics.FillRectangle(new SolidBrush(Color.Red), r1);
+            e.ChartGraphics.Graphics.DrawRectangle(new Pen(Color.Black, 50), r2);
+        }
 
     }
 

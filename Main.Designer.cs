@@ -40,6 +40,7 @@
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fileHelperBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -115,11 +116,21 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Output Folder";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(25, 137);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(0, 20);
+            this.label3.TabIndex = 8;
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(855, 209);
+            this.ClientSize = new System.Drawing.Size(855, 222);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSaveFileDialog);
@@ -149,5 +160,6 @@
         private FolderBrowserDialog folderBrowserDialog1;
         private Label label1;
         private Label label2;
+        private Label label3;
     }
 }

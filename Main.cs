@@ -28,14 +28,21 @@ namespace ShaftkitMSA2_Parser
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            FileHelper helper = new FileHelper();
+            // make sure file exists
+            if (File.Exists(txtInputFile.Text))
+            {
+                FileHelper helper = new FileHelper();
 
-            // read data from input file
-            helper.ReadFromFile(txtInputFile.Text);
-            helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
+                // read data from input file
+                helper.ReadFromFile(txtInputFile.Text);
+                helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
 
-            helper.CreatePlots(txtOutputFolder.Text);
-
+                helper.CreatePlots(txtOutputFolder.Text);
+            }
+            else
+            {
+                MessageBox.Show("The input file does not exist or there is no permission to access it.");
+            }
         }
 
         private void btnOpenFileDialog_Click(object sender, EventArgs e)
@@ -85,6 +92,10 @@ namespace ShaftkitMSA2_Parser
             }
         }
 
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }
