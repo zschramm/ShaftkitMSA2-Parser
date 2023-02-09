@@ -23,23 +23,27 @@ namespace ShaftkitMSA2_Parser
 
             txtInputFile.Text = Properties.Settings1.Default.InputPath;
             txtOutputFolder.Text = Properties.Settings1.Default.OutputPath;
+
         }
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            FileHelper helper = new FileHelper();
+            // make sure file exists
+            if (File.Exists(txtInputFile.Text))
+            {
+                FileHelper helper = new FileHelper();
 
-            // read data from input file
-            helper.ReadFromFile(txtInputFile.Text);
-            helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
+                // read data from input file
+                helper.ReadFromFile(txtInputFile.Text);
 
-            helper.CreatePlots(txtOutputFolder.Text);
+                helper.WriteCSV(txtOutputFolder.Text + "\\output.csv");
 
-        }
-
-        private void txtInputFile_TextChanged(object sender, EventArgs e)
-        {
-
+                helper.CreatePlots(txtOutputFolder.Text);
+            }
+            else
+            {
+                MessageBox.Show("The input file does not exist or there is no permission to access it.");
+            }
         }
 
         private void btnOpenFileDialog_Click(object sender, EventArgs e)
@@ -89,6 +93,29 @@ namespace ShaftkitMSA2_Parser
             }
         }
 
+        //protected virtual bool IsFileinUse(FileInfo file)
+        //{
+        //    FileStream stream = null;
+
+        //    try
+        //    {
+        //        stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+        //    }
+        //    catch (IOException)
+        //    {
+        //        //the file is unavailable because it is:
+        //        //still being written to
+        //        //or being processed by another thread
+        //        //or does not exist (has already been processed)
+        //        return true;
+        //    }
+        //    finally
+        //    {
+        //        if (stream != null)
+        //            stream.Close();
+        //    }
+        //    return false;
+        //}
     }
 
 }

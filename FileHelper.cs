@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows.Forms.DataVisualization.Charting;
 using CsvHelper;
 
@@ -62,24 +63,9 @@ namespace ShaftkitMSA2_Parser
         {
             string trimmed = line.Trim();
             string[] newline = trimmed.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
-            //string[] newline = nextline.Except(new List<string> { string.Empty }).ToArray();
-
-            // need to return something if string{0}
-
 
             return newline;
         }
-
-        //private static IEnumerable<String> SplitInParts(String s, Int32 partLength)
-        //{
-        //    if (s == null)
-        //        throw new ArgumentNullException(nameof(s));
-        //    if (partLength <= 0)
-        //        throw new ArgumentException("Part length has to be positive.", nameof(partLength));
-
-        //    for (var i = 0; i < s.Length; i += partLength)
-        //        yield return s.Substring(i, Math.Min(partLength, s.Length - i));
-        //}
 
         public void ReadFromFile(string filename)
         {
@@ -361,7 +347,6 @@ namespace ShaftkitMSA2_Parser
 
         }
 
-
         public void WriteCSV(string filename)
         {
             using (var writer = new StreamWriter(filename))
@@ -468,10 +453,177 @@ namespace ShaftkitMSA2_Parser
             filename = outputPath + "\\stress.jpg";
             clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
                                                           NodeX, Stress, ReactX, ReactZero);
+
+            filename = outputPath + "\\model.jpg";
+            PlotModel(filename);
+
+        }
+
+        private void PlotModel(string filename)
+        {
+            List<float> ReactYOD = new List<float>();
+
+            Chart chartModel = new Chart();
+
+            // setup chart options    
+            Font textFont = new Font("Arial", 24);
+
+            //  Create the chart
+            // Chart this = new Chart();
+            chartModel.BackColor = Color.FromArgb(50, Color.White);
+            chartModel.BorderlineDashStyle = ChartDashStyle.Solid;
+            chartModel.BorderlineColor = Color.Black;
+            chartModel.Width = 1500;
+            chartModel.Height = 700;
+            chartModel.AntiAliasing = AntiAliasingStyles.All;
+            chartModel.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
+
+            //  Create the chart area
+            ChartArea a = new ChartArea("ChartArea1");
+            a.Area3DStyle.Enable3D = false;
+            a.Area3DStyle.WallWidth = 0;
+            a.BackColor = Color.FromArgb(100, Color.White);
+            chartModel.ChartAreas.Add(a);
+
+            //  Create the axis
+            a.AxisX.LineColor = Color.Black;
+            a.AxisX.MajorGrid.Enabled = true;
+            a.AxisX.MinorGrid.Enabled = false;
+            a.AxisX.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisX.LabelStyle.Font = textFont;
+            a.AxisX.LabelStyle.Format = "0";
+            a.AxisX.Title = "Position (m)";
+            a.AxisX.TitleFont = textFont;
+            a.AxisX.Maximum = NodeX[NodeX.Count - 1] * 1.05;
+            a.AxisX.Minimum = -1 * (a.AxisX.Maximum - NodeX[NodeX.Count - 1]);
+
+            a.AxisY.LineColor = Color.Black;
+            a.AxisY.MajorGrid.Enabled = true;
+            a.AxisY.MinorGrid.Enabled = false;
+            a.AxisY.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
+            a.AxisY.LabelStyle.Font = textFont;
+            a.AxisY.LabelStyle.Format = "0.0";
+            a.AxisY.Title = "Diameter (m)";
+            a.AxisY.TitleFont = textFont;
+            a.AxisY.Maximum = ElemOD.Max() * 1.75;
+            a.AxisY.Minimum = -a.AxisY.Maximum;
+
+
+            // Plot OD series
+            Series sOD = new Series("OD");
+            sOD.ChartType = SeriesChartType.Area;
+
+            sOD.Points.AddXY(0, 0);
+            for (int i = 0; i < NodeX.Count - 1; i++)
+            {
+                sOD.Points.AddXY(NodeX[i], ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i + 1], ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i + 1], 0);
+
+                if (ReactX.Contains(NodeX[i]))
+                {
+                    ReactYOD.Add(ElemOD[i]);
+                }
+            }
+
+            for (int i = NodeX.Count - 2; i >= 0; i--)
+            {
+                sOD.Points.AddXY(NodeX[i + 1], -ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i], -ElemOD[i]);
+                sOD.Points.AddXY(NodeX[i], 0);
+            }
+            sOD.Color = Color.FromArgb(200, Color.LightBlue);
+            sOD.BorderWidth = 1;
+            chartModel.Series.Add(sOD);
+
+
+            // OD series to plot black border
+            Series sOD2 = new Series("OD Border");
+            sOD2.ChartType = SeriesChartType.Line;
+            sOD2.Color = Color.FromArgb(200, Color.Black);
+            sOD2.BorderWidth = 2;
+            chartModel.Series.Add(sOD2);
+
+            chartModel.DataManipulator.CopySeriesValues(sOD.Name, sOD2.Name);
+
+
+            // Plot ID series
+            Series sID = new Series("ID");
+            sID.ChartType = SeriesChartType.Area;
+
+            sID.Points.AddXY(0, 0);
+            for (int i = 0; i < NodeX.Count - 1; i++)
+            {
+                sID.Points.AddXY(NodeX[i], ElemID[i]);
+                sID.Points.AddXY(NodeX[i + 1], ElemID[i]);
+                sID.Points.AddXY(NodeX[i + 1], 0);
+
+            }
+
+            for (int i = NodeX.Count - 2; i >= 0; i--)
+            {
+                sID.Points.AddXY(NodeX[i + 1], -ElemID[i]);
+                sID.Points.AddXY(NodeX[i], -ElemID[i]);
+                sID.Points.AddXY(NodeX[i], 0);
+            }
+            sID.Color = Color.FromArgb(200, Color.White);
+            sID.BorderWidth = 1;
+            chartModel.Series.Add(sID);
+
+
+            // OD series to plot black border
+            Series sID2 = new Series("ID Border");
+            sID2.ChartType = SeriesChartType.Line;
+            sID2.Color = Color.FromArgb(200, Color.Black);
+            sID2.BorderWidth = 2;
+            chartModel.Series.Add(sID2);
+
+            chartModel.DataManipulator.CopySeriesValues(sID.Name, sID2.Name);
+
+            
+            //  Create the bearing series
+            Series s3 = new Series("Bearings");
+            s3.ChartType = SeriesChartType.Line;
+
+            for (int i = 0; i < ReactX.Count; i++)
+            {
+                s3.Points.AddXY(ReactX[i], -ReactYOD[i]);
+            }
+
+            s3.Color = Color.FromArgb(0, Color.Black);
+            s3.MarkerStyle = MarkerStyle.Triangle;
+            s3.MarkerColor = Color.FromArgb(200, Color.Red);
+            s3.MarkerSize = 20;
+            chartModel.Series.Add(s3);
+
+            // Initiate drawing shapes
+            chartModel.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(this.PostPaint);
+
+            // save to file
+            chartModel.SaveImage(filename, ChartImageFormat.Jpeg);
+        }
+
+        private void PostPaint(object sender, System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs e)
+        {
+            Rectangle r1 = new Rectangle();
+            r1.X = 10;
+            r1.Y = 10;
+            r1.Width = 200;
+            r1.Height = 200;
+
+            Rectangle r2 = new Rectangle();
+            r2.X = 100;
+            r2.Y = 100;
+            r2.Width = 200;
+            r2.Height = 300;
+
+            e.ChartGraphics.Graphics.FillRectangle(new SolidBrush(Color.Red), r1);
+            e.ChartGraphics.Graphics.DrawRectangle(new Pen(Color.Black, 50), r2);
         }
 
     }
 
+   
     public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
     {
         public clsCustomChart(string filename,
@@ -492,7 +644,9 @@ namespace ShaftkitMSA2_Parser
             this.BorderlineDashStyle = ChartDashStyle.Solid;
             this.BorderlineColor = Color.Black;
             this.Width = 1500;
-            this.Height = 800;
+            this.Height = 700;
+            this.AntiAliasing = AntiAliasingStyles.All;
+            this.TextAntiAliasingQuality = TextAntiAliasingQuality.High;
 
             //  Create the chart area
             ChartArea a = new ChartArea("ChartArea1");
