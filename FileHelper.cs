@@ -425,6 +425,8 @@ namespace ShaftkitMSA2_Parser
                 }
                 csv.NextRecord();
 
+
+
                 // write elements table
                 csv.WriteComment("Elements");
                 csv.NextRecord();
@@ -432,7 +434,6 @@ namespace ShaftkitMSA2_Parser
                 csv.NextRecord();
                 csv.WriteRecords(Elems);
                 csv.NextRecord();
-
 
                 // write nodes table
                 csv.WriteComment("Nodes");
@@ -467,118 +468,9 @@ namespace ShaftkitMSA2_Parser
             filename = outputPath + "\\stress.jpg";
             clsCustomChart chartStress = new clsCustomChart(filename, "Position (m)", "Bending Stress (MPa)",
                                                           NodeX, Stress, ReactX, ReactZero);
-
-            filename = outputPath + "\\model.jpg";
-            clsModelChart chartModel = new clsModelChart(filename);
-        
         }
 
     }
-
-    public class clsModelChart : System.Windows.Forms.DataVisualization.Charting.Chart
-    {
-        public clsModelChart(string filename) // List<Elem> elems, List<Node> nodes)
-        {
-
-            // setup chart options    
-            Font textFont = new Font("Arial", 24);
-
-            //  Create the chart
-            // Chart this = new Chart();
-            this.BackColor = Color.FromArgb(50, Color.White);
-            this.BorderlineDashStyle = ChartDashStyle.Solid;
-            this.BorderlineColor = Color.Black;
-            this.Width = 1500;
-            this.Height = 800;
-
-            ////  Create the chart area
-            //ChartArea a = new ChartArea("ChartArea1");
-            //a.Area3DStyle.Enable3D = false;
-            //a.Area3DStyle.WallWidth = 0;
-            //a.BackColor = Color.FromArgb(100, Color.White);
-            //this.ChartAreas.Add(a);
-
-
-            // https://stackoverflow.com/questions/23683972/drawing-rectangles-on-chart-c-sharp
-            Rectangle r1 = new Rectangle();
-            r1.X = 10;
-            r1.Y = 10;
-            r1.Width = 20;
-            r1.Height = 20;
-
-            Rectangle r2 = new Rectangle();
-            r2.X = 300;
-            r2.Y = 400;
-            r2.Width = 200;
-            r2.Height = 300;
-
-            // https://learn.microsoft.com/en-us/dotnet/api/system.drawing.pen?view=dotnet-plat-ext-7.0
-            Graphics g;
-            g = this.CreateGraphics();
-            Pen skyBluePen = new Pen(Brushes.DeepSkyBlue);
-            skyBluePen.Width = 8.0F;
-            skyBluePen.LineJoin = System.Drawing.Drawing2D.LineJoin.Bevel;
-            g.DrawRectangle(skyBluePen, r1);
-            g.DrawRectangle(skyBluePen, r2);
-            skyBluePen.Dispose();
-
-            ////  Create the axis
-            //a.AxisX.LineColor = Color.Black;
-            //a.AxisX.MajorGrid.Enabled = true;
-            //a.AxisX.MinorGrid.Enabled = false;
-            //a.AxisX.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
-            //a.AxisX.LabelStyle.Font = textFont;
-            //a.AxisX.LabelStyle.Format = "0";
-            //a.AxisX.Title = xLabel;
-            //a.AxisX.TitleFont = textFont;
-
-            //a.AxisY.LineColor = Color.Black;
-            //a.AxisY.MajorGrid.Enabled = true;
-            //a.AxisY.MinorGrid.Enabled = false;
-            //a.AxisY.MajorGrid.LineColor = Color.FromArgb(50, Color.Black);
-            //a.AxisY.LabelStyle.Font = textFont;
-            //a.AxisY.LabelStyle.Format = "0.0";
-            //a.AxisY.Title = yLabel;
-            //a.AxisY.TitleFont = textFont;
-
-            //  Chart title
-            //this.Titles.Add(new Title(strChartTitle));
-
-            //  Add the data
-            //  Create the data series
-            //Series s = new Series("Series1");
-            //s.ChartType = SeriesChartType.Line;
-
-            //for (int i = 0; i < X.Count; i++)
-            //{
-            //    s.Points.AddXY(X[i], Y[i]);
-            //}
-
-            //s.Color = Color.FromArgb(200, Color.DarkBlue);
-            //s.BorderWidth = 3;
-            //this.Series.Add(s);
-
-            ////  Create the bearing series
-            //Series s2 = new Series("Series2");
-            //s2.ChartType = SeriesChartType.Line;
-
-            //for (int i = 0; i < ReactX.Count; i++)
-            //{
-            //    s2.Points.AddXY(ReactX[i], ReactY[i]);
-            //}
-
-            //s2.Color = Color.FromArgb(0, Color.Black);
-            //s2.MarkerStyle = MarkerStyle.Triangle;
-            //s2.MarkerColor = Color.FromArgb(200, Color.Red);
-            //s2.MarkerSize = 20;
-            //this.Series.Add(s2);
-
-            this.SaveImage(filename, ChartImageFormat.Jpeg);
-
-        }
-
-    }
-
 
     public class clsCustomChart : System.Windows.Forms.DataVisualization.Charting.Chart
     {
